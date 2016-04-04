@@ -9,12 +9,12 @@ namespace OxHack.Inventory.Data.Sqlite.Repositories
 {
 	public class ItemRepository : IItemRepository
 	{
-		public Task<IReadOnlyCollection<Item>> GetAllItemsAsync()
+		public async Task<IEnumerable<Item>> GetAllItemsAsync()
 		{
-			throw new NotImplementedException();
+			return await Task.FromResult(new[] { new Item(), new Item(), new Item(), new Item(), });
 		}
 
-		public Task<Item> GetByIdAsync(int id)
+		public async Task<Item> GetByIdAsync(int id)
 		{
 			throw new NotImplementedException();
 		}

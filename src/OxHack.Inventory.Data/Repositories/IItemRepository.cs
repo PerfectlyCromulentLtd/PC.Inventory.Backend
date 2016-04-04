@@ -9,7 +9,7 @@ namespace OxHack.Inventory.Data.Repositories
 {
 	public interface IItemRepository
 	{
-		Task<IReadOnlyCollection<Item>> GetAllItemsAsync();
+		Task<IEnumerable<Item>> GetAllItemsAsync();
 
 		Task<Item> GetByIdAsync(int id);
 	}

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OxHack.Inventory.Data.Models;
 
 namespace OxHack.Inventory.Services
 {
@@ -14,5 +15,10 @@ namespace OxHack.Inventory.Services
 		{
 			this.itemRepo = itemRepo;
 		}
-    }
+
+		public async Task<IEnumerable<Item>> GetAllItemsAsync()
+		{
+			return await this.itemRepo.GetAllItemsAsync();
+		}
+	}
 }

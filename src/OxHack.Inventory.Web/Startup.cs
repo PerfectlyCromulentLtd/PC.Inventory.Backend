@@ -32,8 +32,8 @@ namespace OxHack.Inventory.Web
             // Add framework services.
             services.AddMvc();
 
-			//services.AddTransient<IItemRepository, ItemRepository>();
-			//services.AddTransient<ItemService>();
+			services.AddTransient<IItemRepository, ItemRepository>();
+			services.AddTransient<ItemService, ItemService>();
 		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
