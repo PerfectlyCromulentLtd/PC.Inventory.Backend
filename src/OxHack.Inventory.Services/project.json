@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0-*",
+  "description": "OxHack.Inventory.Services Class Library",
+  "authors": [ "yargh_000" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net451": {
+      "dependencies": {
+        "System.Collections": "4.0.11-rc2-23826",
+        "System.Linq": "4.1.0-rc2-23826",
+        "System.Runtime": "4.1.0-rc2-23826"
+      }
+    },
+    "dotnet5.4": {
+      "dependencies": {
+      }
+    }
+  },
+  "dependencies": {
+    "Microsoft.CSharp": "4.0.1-rc2-23826",
+    "OxHack.Inventory.Data": "1.0.0-*",
+    "System.Threading": "4.0.11-rc2-23826"
+  }
+}
