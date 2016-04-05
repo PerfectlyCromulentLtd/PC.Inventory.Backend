@@ -86,18 +86,24 @@ namespace OxHack.Inventory.Data.Models
 			internal set;
 		}
 
-		public IEnumerable<String> Photos
+		public String Photos
 		{
 			get;
 			internal set;
 		}
 
-		public bool HasPhoto
-		{
-			get
-			{
-				return this.Photos?.Any(item => !String.IsNullOrWhiteSpace(item)) ?? false;
-			}
-		}
+		//public IEnumerable<String> Photos
+		//{
+		//	get;
+		//	internal set;
+		//}
+
+		//public bool HasPhoto
+		//{
+		//	get
+		//	{
+		//		return this.Photos?.Any(item => !String.IsNullOrWhiteSpace(item)) ?? false;
+		//	}
+		//}
 	}
 }
