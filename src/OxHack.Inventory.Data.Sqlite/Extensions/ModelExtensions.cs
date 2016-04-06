@@ -7,7 +7,7 @@ namespace OxHack.Inventory.Data.Sqlite.Extensions
 {
 	internal static class ModelExtensions
 	{
-		public static Data.Models.Item AsImmutable(this Sqlite.Models.Item @this)
+		public static Data.Models.Item ToImmutableModel(this Sqlite.Models.Item @this)
 		{
 			return new Data.Models.Item(
 				(int)@this.Id,
@@ -26,7 +26,7 @@ namespace OxHack.Inventory.Data.Sqlite.Extensions
 				@this.Photos.Select(item => item.Filename).ToList());
 		}
 
-		public static Sqlite.Models.Item AsImmutable(this Data.Models.Item @this)
+		public static Sqlite.Models.Item ToDbModel(this Data.Models.Item @this)
 		{
 			var resultItem = new Sqlite.Models.Item()
 			{

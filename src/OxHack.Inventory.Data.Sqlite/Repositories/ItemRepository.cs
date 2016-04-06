@@ -22,7 +22,7 @@ namespace OxHack.Inventory.Data.Sqlite.Repositories
 		{
 			var items = await this.dbContext.Items.Include(item => item.Photos).ToListAsync();
 
-			var immutables = items.Select(item => item.AsImmutable());
+			var immutables = items.Select(item => item.ToImmutableModel());
 
 			return immutables;
 		}
