@@ -8,101 +8,113 @@ namespace OxHack.Inventory.Data.Models
 {
 	public class Item
 	{
+		public Item(
+			int id,
+			string additionalInformation,
+			string appearance,
+			string assignedLocation,
+			string category,
+			string currentLocation,
+			bool isLoan,
+			string manufacturer,
+			string model,
+			string name,
+			string origin,
+			int quantity,
+			string spec,
+			IEnumerable<string> photos)
+		{
+			this.Id = id;
+			this.AdditionalInformation = additionalInformation;
+			this.Appearance = appearance;
+			this.AssignedLocation = assignedLocation;
+			this.Category = category;
+			this.CurrentLocation = currentLocation;
+			this.IsLoan = isLoan;
+			this.Manufacturer = manufacturer;
+			this.Model = model;
+			this.Name = name;
+			this.Origin = origin;
+			this.Quantity = quantity;
+			this.Spec = spec;
+			this.Photos = photos;
+		}
+
 		public int Id
 		{
 			get;
-			internal set;
 		}
 
-		public String Name
+		public string Name
 		{
 			get;
-			internal set;
 		}
 
-		public String Manufacturer
+		public string Manufacturer
 		{
 			get;
-			internal set;
 		}
 
-		public String Model
+		public string Model
 		{
 			get;
-			internal set;
 		}
 
 		public int Quantity
 		{
 			get;
-			internal set;
 		}
 
-		public String Category
+		public string Category
 		{
 			get;
-			internal set;
 		}
 
-		public String Spec
+		public string Spec
 		{
 			get;
-			internal set;
 		}
 
-		public String Appearance
+		public string Appearance
 		{
 			get;
-			internal set;
 		}
 
-		public String AssignedLocation
+		public string AssignedLocation
 		{
 			get;
-			internal set;
 		}
 
-		public String CurrentLocation
+		public string CurrentLocation
 		{
 			get;
-			internal set;
 		}
 
 		public bool IsLoan
 		{
 			get;
-			internal set;
 		}
 
-		public String Origin
+		public string Origin
 		{
 			get;
-			internal set;
 		}
 
-		public String AdditionalInformation
+		public string AdditionalInformation
 		{
 			get;
-			internal set;
 		}
 
-		public String Photos
+		public IEnumerable<string> Photos
 		{
 			get;
-			internal set;
 		}
 
-		//public IEnumerable<String> Photos
-		//{
-		//	get;
-		//	internal set;
-		//}
-
-		//public bool HasPhoto
+		//public IEnumerable<Uri> PhotoLinks
 		//{
 		//	get
 		//	{
-		//		return this.Photos?.Any(item => !String.IsNullOrWhiteSpace(item)) ?? false;
+		//		return this.Photos?.Select(item => new Uri("http://localhost:58589/images/items/" + item)).ToList();
 		//	}
 		//}
 	}

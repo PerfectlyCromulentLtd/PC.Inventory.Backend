@@ -7,7 +7,7 @@
   "licenseUrl": "",
 
   "frameworks": {
-    "net451": {
+    "dnx451": {
       "dependencies": {
         "EntityFramework.Commands": "7.0.0-rc1-final",
         "System.Collections": "4.0.11-rc1-final",
@@ -16,7 +16,7 @@
       }
     },
 
-    "dotnet5.4": {
+    "dnxcore50": {
       "dependencies": {
       }
     }
@@ -25,6 +25,7 @@
   "dependencies": {
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
     "EntityFramework.SQLite": "7.0.0-rc1-final",
+    "EntityFramework.Sqlite.Design": "7.0.0-rc1-final",
     "Microsoft.CSharp": "4.0.1-rc1-final",
     "OxHack.Inventory.Data": "1.0.0-*",
     "System.Threading": "4.0.11-rc1-final"

@@ -1,8 +1,10 @@
 ﻿using Microsoft.Data.Entity;
 using OxHack.Inventory.Data.Models;
 using OxHack.Inventory.Data.Repositories;
+using OxHack.Inventory.Data.Sqlite.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Data.Sqlite.Repositories
@@ -18,7 +20,11 @@ namespace OxHack.Inventory.Data.Sqlite.Repositories
 
 		public async Task<IEnumerable<Item>> GetAllItemsAsync()
 		{
-			return await this.dbContext.Items.ToListAsync();
+			var items = await this.dbContext.Items.Include(item => item.Photos).ToListAsync();
+
+			var immutables = items.Select(item => item.AsImmutable());
+
+			return immutables;
 		}
 
 		public async Task<Item> GetByIdAsync(int id)
