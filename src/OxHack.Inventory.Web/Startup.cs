@@ -30,6 +30,8 @@ namespace OxHack.Inventory.Web
 			// Add framework services.
 			services.AddMvc();
 
+			services.AddSingleton<IConfiguration>(sp => this.Configuration);
+
 			SqliteProject.Startup.ConfigureServices(services, this.Configuration);
 			ServicesProject.Startup.ConfigureServices(services);
 		}

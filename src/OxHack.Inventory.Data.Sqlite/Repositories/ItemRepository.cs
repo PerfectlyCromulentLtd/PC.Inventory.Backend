@@ -20,7 +20,11 @@ namespace OxHack.Inventory.Data.Sqlite.Repositories
 
 		public async Task<IEnumerable<Item>> GetAllItemsAsync()
 		{
-			var items = await this.dbContext.Items.Include(item => item.Photos).ToListAsync();
+			var items = await 
+				this.dbContext.Items
+					.Include(item => item.Photos)
+					.IncludeAllMembers()
+					.ToListAsync();
 
 			var immutables = items.Select(item => item.ToImmutableModel());
 
@@ -29,7 +33,12 @@ namespace OxHack.Inventory.Data.Sqlite.Repositories
 
 		public async Task<Item> GetByIdAsync(int id)
 		{
-			throw new NotImplementedException();
+			var result = await
+				this.dbContext.Items
+					.IncludeAllMembers()
+					.SingleOrDefaultAsync(item => item.Id == id);
+
+			return result?.ToImmutableModel();					
 		}
 	}
 }
