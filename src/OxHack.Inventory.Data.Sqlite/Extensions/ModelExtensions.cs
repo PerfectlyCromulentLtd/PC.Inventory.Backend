@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OxHack.Inventory.Data.Sqlite.Extensions
+namespace OxHack.Inventory.Query.Sqlite.Extensions
 {
 	internal static class ModelExtensions
 	{

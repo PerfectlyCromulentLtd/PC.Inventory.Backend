@@ -1,10 +1,10 @@
 ﻿using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OxHack.Inventory.Data.Repositories;
-using OxHack.Inventory.Data.Sqlite.Repositories;
+using OxHack.Inventory.Query.Repositories;
+using OxHack.Inventory.Query.Sqlite.Repositories;
 
-namespace OxHack.Inventory.Data.Sqlite
+namespace OxHack.Inventory.Query.Sqlite
 {
 	public static class Startup
     {

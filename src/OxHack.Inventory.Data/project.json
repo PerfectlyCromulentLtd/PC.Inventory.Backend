@@ -1,6 +1,6 @@
 {
   "version": "1.0.0-*",
-  "description": "OxHack.Inventory.Data Class Library",
+  "description": "OxHack.Inventory.Query Class Library",
   "authors": [ "yargh_000" ],
   "tags": [ "" ],
   "projectUrl": "",

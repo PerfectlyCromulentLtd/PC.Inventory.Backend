@@ -3,7 +3,7 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SqliteProject = OxHack.Inventory.Data.Sqlite;
+using SqliteProject = OxHack.Inventory.Query.Sqlite;
 using ServicesProject = OxHack.Inventory.Services;
 
 namespace OxHack.Inventory.Web

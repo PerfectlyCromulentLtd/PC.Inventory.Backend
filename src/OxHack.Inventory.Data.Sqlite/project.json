@@ -1,6 +1,6 @@
 {
   "version": "1.0.0-*",
-  "description": "OxHack.Inventory.Data.Sqlite Class Library",
+  "description": "OxHack.Inventory.Query.Sqlite Class Library",
   "authors": [ "yargh_000" ],
   "tags": [ "" ],
   "projectUrl": "",
@@ -27,7 +27,7 @@
     "EntityFramework.SQLite": "7.0.0-rc1-final",
     "EntityFramework.Sqlite.Design": "7.0.0-rc1-final",
     "Microsoft.CSharp": "4.0.1-rc1-final",
-    "OxHack.Inventory.Data": "1.0.0-*",
+    "OxHack.Inventory.Query": "1.0.0-*",
     "System.Threading": "4.0.11-rc1-final"
   },
 

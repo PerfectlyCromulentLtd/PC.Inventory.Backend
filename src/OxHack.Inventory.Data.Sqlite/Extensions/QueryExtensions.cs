@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.Entity.Query;
-using OxHack.Inventory.Data.Sqlite.Models;
+using OxHack.Inventory.Query.Sqlite.Models;
 
-namespace OxHack.Inventory.Data.Sqlite.Extensions
+namespace OxHack.Inventory.Query.Sqlite.Extensions
 {
 	public static class QueryExtensions
 	{

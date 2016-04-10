@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OxHack.Inventory.Data.Sqlite.Models
+namespace OxHack.Inventory.Query.Sqlite.Models
 {
     internal partial class Photo
     {

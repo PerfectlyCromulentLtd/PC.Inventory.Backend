@@ -1,9 +1,9 @@
-﻿using OxHack.Inventory.Data.Repositories;
+﻿using OxHack.Inventory.Query.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OxHack.Inventory.Data.Models;
+using OxHack.Inventory.Query.Models;
 
 namespace OxHack.Inventory.Services
 {

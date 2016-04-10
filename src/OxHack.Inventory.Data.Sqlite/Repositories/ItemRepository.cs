@@ -1,13 +1,13 @@
 ﻿using Microsoft.Data.Entity;
-using OxHack.Inventory.Data.Models;
-using OxHack.Inventory.Data.Repositories;
-using OxHack.Inventory.Data.Sqlite.Extensions;
+using OxHack.Inventory.Query.Models;
+using OxHack.Inventory.Query.Repositories;
+using OxHack.Inventory.Query.Sqlite.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OxHack.Inventory.Data.Sqlite.Repositories
+namespace OxHack.Inventory.Query.Sqlite.Repositories
 {
 	public class ItemRepository : IItemRepository
 	{

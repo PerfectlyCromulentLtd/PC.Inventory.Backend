@@ -1,12 +1,12 @@
 ﻿using Microsoft.Data.Entity;
 using Microsoft.Data.Entity.Metadata;
-using OxHack.Inventory.Data.Sqlite.Models;
+using OxHack.Inventory.Query.Sqlite.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OxHack.Inventory.Data.Sqlite
+namespace OxHack.Inventory.Query.Sqlite
 {
     public class InventoryDbContext : DbContext
     {
