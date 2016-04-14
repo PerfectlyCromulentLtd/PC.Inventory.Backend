@@ -7,10 +7,10 @@ namespace OxHack.Inventory.Query.Sqlite.Extensions
 {
 	internal static class ModelExtensions
 	{
-		public static Data.Models.Item ToImmutableModel(this Sqlite.Models.Item @this)
+		public static Query.Models.Item ToImmutableModel(this Sqlite.Models.Item @this)
 		{
-			return new Data.Models.Item(
-				(int)@this.Id,
+			return new Query.Models.Item(
+				new Guid(@this.Id),
 				@this.AdditionalInformation,
 				@this.Appearance,
 				@this.AssignedLocation,
@@ -26,11 +26,11 @@ namespace OxHack.Inventory.Query.Sqlite.Extensions
 				@this.Photos.Select(item => item.Filename).ToList());
 		}
 
-		public static Sqlite.Models.Item ToDbModel(this Data.Models.Item @this)
+		public static Sqlite.Models.Item ToDbModel(this Query.Models.Item @this)
 		{
 			var resultItem = new Sqlite.Models.Item()
 			{
-				Id = @this.Id,
+				Id = @this.Id.ToString(),
 				AdditionalInformation = @this.AdditionalInformation,
 				Appearance = @this.Appearance,
 				AssignedLocation = @this.AssignedLocation,

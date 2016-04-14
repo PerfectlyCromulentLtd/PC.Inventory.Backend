@@ -10,7 +10,8 @@ namespace OxHack.Inventory.Query.Sqlite.Models
             this.Photos = new HashSet<Photo>();
         }
 
-        public long Id { get; set; }
+        public string Id { get; set; }
+        public string Stamp { get; set; }
         public string AdditionalInformation { get; set; }
         public string Appearance { get; set; }
         public string AssignedLocation { get; set; }

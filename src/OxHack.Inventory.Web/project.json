@@ -21,7 +21,8 @@
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc1-final",
     "OxHack.Inventory.Query": "1.0.0-*",
     "OxHack.Inventory.Query.Sqlite": "1.0.0-*",
-    "OxHack.Inventory.Services": "1.0.0-*"
+    "OxHack.Inventory.Services": "1.0.0-*",
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final"
   },
 
   "commands": {

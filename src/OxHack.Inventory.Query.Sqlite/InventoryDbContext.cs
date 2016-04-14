@@ -14,19 +14,17 @@ namespace OxHack.Inventory.Query.Sqlite
 		{
 			modelBuilder.Entity<Item>(entity =>
 			{
-				entity.Property(e => e.Appearance).IsRequired();
-
+                entity.Property(e => e.Id).IsRequired();
+                entity.Property(e => e.Stamp).IsConcurrencyToken();
+                entity.Property(e => e.Appearance).IsRequired();
 				entity.Property(e => e.AssignedLocation).IsRequired();
-
 				entity.Property(e => e.Category).IsRequired();
-
 				entity.Property(e => e.Name).IsRequired();
 			});
 
 			modelBuilder.Entity<Photo>(entity =>
 			{
 				entity.HasKey(e => e.Filename);
-
 				entity.HasOne(d => d.Item).WithMany(p => p.Photos).HasForeignKey(d => d.ItemId).OnDelete(DeleteBehavior.Restrict);
 			});
 		}

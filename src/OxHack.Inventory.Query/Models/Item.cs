@@ -9,7 +9,7 @@ namespace OxHack.Inventory.Query.Models
 	public class Item
 	{
 		public Item(
-			int id,
+			Guid id,
 			string additionalInformation,
 			string appearance,
 			string assignedLocation,
@@ -40,7 +40,7 @@ namespace OxHack.Inventory.Query.Models
 			this.Photos = photos;
 		}
 
-		public int Id
+		public Guid Id
 		{
 			get;
 		}
@@ -109,13 +109,5 @@ namespace OxHack.Inventory.Query.Models
 		{
 			get;
 		}
-
-		//public IEnumerable<Uri> PhotoLinks
-		//{
-		//	get
-		//	{
-		//		return this.Photos?.Select(item => new Uri("http://localhost:58589/images/items/" + item)).ToList();
-		//	}
-		//}
 	}
 }

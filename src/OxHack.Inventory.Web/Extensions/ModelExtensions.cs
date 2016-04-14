@@ -7,7 +7,7 @@ namespace OxHack.Inventory.Web.Extensions
 {
 	internal static class ModelExtensions
 	{
-		public static Models.Item ToWebModel(this Data.Models.Item @this, string photoPath)
+		public static Models.Item ToWebModel(this Query.Models.Item @this, string photoPath)
 		{
 			return new Models.Item(
 				@this.Id,

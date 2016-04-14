@@ -31,12 +31,12 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 			return immutables;
 		}
 
-		public async Task<Item> GetByIdAsync(int id)
+		public async Task<Item> GetByIdAsync(Guid id)
 		{
 			var result = await
 				this.dbContext.Items
 					.IncludeAllMembers()
-					.SingleOrDefaultAsync(item => item.Id == id);
+					.SingleOrDefaultAsync(item => item.Id == id.ToString());
 
 			return result?.ToImmutableModel();					
 		}

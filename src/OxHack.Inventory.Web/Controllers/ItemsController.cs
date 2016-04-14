@@ -7,6 +7,7 @@ using OxHack.Inventory.Services;
 using OxHack.Inventory.Web.Models;
 using OxHack.Inventory.Web.Extensions;
 using Microsoft.Extensions.Configuration;
+using OxHack.Inventory.Web.Filters;
 
 namespace OxHack.Inventory.Web.Controllers
 {
@@ -33,7 +34,7 @@ namespace OxHack.Inventory.Web.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public async Task<Item> GetById(int id)
+		public async Task<Item> GetById(Guid id)
 		{
 			var model = await this.itemService.GetItemByIdAsync(id);
 
@@ -41,5 +42,16 @@ namespace OxHack.Inventory.Web.Controllers
 
 			return model.ToWebModel(host + this.config["PathTo:ItemPhotos"]);
 		}
+
+		//[OptimisticConcurrencyFilter]
+		//[HttpPut]
+		//public async Task<Item> Put(int id)
+		//{
+		//	//var model = await this.itemService.GetItemByIdAsync(id);
+
+		//	//var host = this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
+
+		//	//return model.ToWebModel(host + this.config["PathTo:ItemPhotos"]);
+		//}
 	}
 }

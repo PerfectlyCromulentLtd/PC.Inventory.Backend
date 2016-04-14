@@ -9,7 +9,7 @@ namespace OxHack.Inventory.Web.Models
 	public class Item
 	{
 		public Item(
-			int id,
+			Guid id,
 			string additionalInformation,
 			string appearance,
 			string assignedLocation,
@@ -40,7 +40,7 @@ namespace OxHack.Inventory.Web.Models
 			this.Photos = photos;
 		}
 
-		public int Id
+		public Guid Id
 		{
 			get;
 		}

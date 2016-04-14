@@ -11,6 +11,6 @@ namespace OxHack.Inventory.Query.Repositories
 	{
 		Task<IEnumerable<Item>> GetAllItemsAsync();
 
-		Task<Item> GetByIdAsync(int id);
+		Task<Item> GetByIdAsync(Guid id);
 	}
 }

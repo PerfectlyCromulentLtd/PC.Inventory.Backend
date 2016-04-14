@@ -21,7 +21,7 @@ namespace OxHack.Inventory.Services
 			return await this.itemRepo.GetAllItemsAsync();
 		}
 
-		public async Task<Item> GetItemByIdAsync(int id)
+		public async Task<Item> GetItemByIdAsync(Guid id)
 		{
 			return await this.itemRepo.GetByIdAsync(id);
 		}
