@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SqliteProject = OxHack.Inventory.Query.Sqlite;
 using ServicesProject = OxHack.Inventory.Services;
+using EventStoreProject = OxHack.Inventory.EventStore;
 
 namespace OxHack.Inventory.Web
 {
@@ -34,6 +35,7 @@ namespace OxHack.Inventory.Web
 
 			SqliteProject.Startup.ConfigureServices(services, this.Configuration);
 			ServicesProject.Startup.ConfigureServices(services);
+			EventStoreProject.Startup.ConfigureServices(services, this.Configuration);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

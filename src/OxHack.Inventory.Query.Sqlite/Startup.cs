@@ -10,7 +10,7 @@ namespace OxHack.Inventory.Query.Sqlite
     {
         public static void ConfigureServices(IServiceCollection services, IConfigurationRoot configuration)
         {
-			var connection = configuration["Production:SqliteConnectionString"];
+			var connection = configuration["Production:SqliteReadModelConnectionString"];
 
 			services
 				.AddEntityFramework()
