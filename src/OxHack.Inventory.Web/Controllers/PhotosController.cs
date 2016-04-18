@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 			var host = this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
 
-			return model.ToWebModel(host + this.config["PathTo:ItemPhotos"]).Photos;
+            return model.Photos?.ToUris(host + this.config["PathTo:ItemPhotos"]);
 		}
 	}
 }

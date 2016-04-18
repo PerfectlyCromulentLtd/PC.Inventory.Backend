@@ -23,7 +23,8 @@ namespace OxHack.Inventory.Query.Sqlite.Extensions
 				@this.Origin,
 				(int)@this.Quantity,
 				@this.Spec,
-				@this.Photos.Select(item => item.Filename).ToList());
+				@this.Photos.Select(item => item.Filename).ToList(),
+                new Guid(@this.ConcurrencyId));
 		}
 
 		public static Sqlite.Models.Item ToDbModel(this Query.Models.Item @this)
@@ -42,7 +43,8 @@ namespace OxHack.Inventory.Query.Sqlite.Extensions
 				Name = @this.Name,
 				Origin = @this.Origin,
 				Quantity = @this.Quantity,
-				Spec = @this.Spec
+				Spec = @this.Spec,
+                ConcurrencyId = @this.ConcurrencyId.ToString()
 			};
 
 			var photos = 

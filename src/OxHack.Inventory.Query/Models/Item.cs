@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxHack.Inventory.Cqrs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Query.Models
 {
-	public class Item
+	public class Item : IConcurrencyAware
 	{
 		public Item(
 			Guid id,
@@ -22,7 +23,8 @@ namespace OxHack.Inventory.Query.Models
 			string origin,
 			int quantity,
 			string spec,
-			IEnumerable<string> photos)
+			IEnumerable<string> photos,
+            Guid concurrencyId)
 		{
 			this.Id = id;
 			this.AdditionalInformation = additionalInformation;
@@ -38,7 +40,8 @@ namespace OxHack.Inventory.Query.Models
 			this.Quantity = quantity;
 			this.Spec = spec;
 			this.Photos = photos;
-		}
+            this.ConcurrencyId = concurrencyId;
+        }
 
 		public Guid Id
 		{
@@ -109,5 +112,9 @@ namespace OxHack.Inventory.Query.Models
 		{
 			get;
 		}
-	}
+        public Guid ConcurrencyId
+        {
+            get;
+        }
+    }
 }

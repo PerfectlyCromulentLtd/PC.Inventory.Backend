@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxHack.Inventory.Cqrs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,8 @@ namespace OxHack.Inventory.Web.Models
 			string origin,
 			int quantity,
 			string spec,
-			IEnumerable<Uri> photos)
+			IEnumerable<Uri> photos,
+            string concurrencyId)
 		{
 			this.Id = id;
 			this.AdditionalInformation = additionalInformation;
@@ -38,6 +40,7 @@ namespace OxHack.Inventory.Web.Models
 			this.Quantity = quantity;
 			this.Spec = spec;
 			this.Photos = photos;
+            this.ConcurrencyId = concurrencyId;
 		}
 
 		public Guid Id
@@ -109,5 +112,10 @@ namespace OxHack.Inventory.Web.Models
 		{
 			get;
 		}
-	}
+
+        public string ConcurrencyId
+        {
+            get;
+        }
+    }
 }

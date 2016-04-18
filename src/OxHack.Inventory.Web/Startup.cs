@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SqliteProject = OxHack.Inventory.Query.Sqlite;
 using ServicesProject = OxHack.Inventory.Services;
 using EventStoreProject = OxHack.Inventory.EventStore;
+using OxHack.Inventory.Web.Services;
 
 namespace OxHack.Inventory.Web
 {
@@ -32,8 +33,9 @@ namespace OxHack.Inventory.Web
 			services.AddMvc();
 
 			services.AddSingleton<IConfiguration>(sp => this.Configuration);
+            services.AddSingleton<EncryptionService>();
 
-			SqliteProject.Startup.ConfigureServices(services, this.Configuration);
+            SqliteProject.Startup.ConfigureServices(services, this.Configuration);
 			ServicesProject.Startup.ConfigureServices(services);
 			EventStoreProject.Startup.ConfigureServices(services, this.Configuration);
 		}

@@ -11,7 +11,6 @@ namespace OxHack.Inventory.Query.Sqlite.Models
         }
 
         public string Id { get; set; }
-        public string Stamp { get; set; }
         public string AdditionalInformation { get; set; }
         public string Appearance { get; set; }
         public string AssignedLocation { get; set; }
@@ -24,6 +23,7 @@ namespace OxHack.Inventory.Query.Sqlite.Models
         public string Origin { get; set; }
         public long Quantity { get; set; }
         public string Spec { get; set; }
+        public string ConcurrencyId { get; set; }
 
         public virtual ICollection<Photo> Photos { get; set; }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxHack.Inventory.Web.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +8,13 @@ namespace OxHack.Inventory.Web.Extensions
 {
 	internal static class ModelExtensions
 	{
-		public static Models.Item ToWebModel(this Query.Models.Item @this, string photoPath)
+		public static Models.Item ToWebModel(this Query.Models.Item @this, string photoPath, EncryptionService encryptionService)
 		{
-			return new Models.Item(
+            byte[] iv;
+            var encryptedBytes = encryptionService.Encrypt(@this.ConcurrencyId.ToString(), out iv);
+            var encryptedConcurrencyId = Convert.ToBase64String(encryptedBytes) + ";" + Convert.ToBase64String(iv);
+
+            return new Models.Item(
 				@this.Id,
 				@this.AdditionalInformation,
 				@this.Appearance,
@@ -23,8 +28,14 @@ namespace OxHack.Inventory.Web.Extensions
 				@this.Origin,
 				@this.Quantity,
 				@this.Spec,
-				@this.Photos?.Select(item => new Uri(photoPath + item)).ToList()
+				@this.Photos?.ToUris(photoPath),
+                encryptedConcurrencyId
 			);
 		}
+
+        public static IEnumerable<Uri> ToUris(this IEnumerable<string> @this, string path)
+        {
+            return @this?.Select(item => new Uri(path + item)).ToList();
+        }
 	}
 }

@@ -7,51 +7,90 @@ using OxHack.Inventory.Services;
 using OxHack.Inventory.Web.Models;
 using OxHack.Inventory.Web.Extensions;
 using Microsoft.Extensions.Configuration;
-using OxHack.Inventory.Web.Filters;
+using OxHack.Inventory.Web.Models.Commands.Item;
+using OxHack.Inventory.Cqrs;
+using System.Security.Cryptography;
+using System.Text;
+using OxHack.Inventory.Web.Services;
 
 namespace OxHack.Inventory.Web.Controllers
 {
-	[Route("api/[controller]")]
-	public class ItemsController : Controller
-	{
-		private readonly IConfiguration config;
-		private readonly ItemService itemService;
+    [Route("api/[controller]")]
+    public class ItemsController : Controller
+    {
+        private readonly EncryptionService encryptionService;
+        private readonly ItemService itemService;
+        private readonly IConfiguration config;
 
-		public ItemsController(ItemService itemService, IConfiguration config)
-		{
-			this.itemService = itemService;
-			this.config = config;
-		}
+        public ItemsController(ItemService itemService, EncryptionService encryptionService, IConfiguration config)
+        {
+            this.itemService = itemService;
+            this.encryptionService = encryptionService;
+            this.config = config;
+        }
 
-		[HttpGet]
-		public async Task<IEnumerable<Item>> GetAll()
-		{
-			var models = await this.itemService.GetAllItemsAsync();
+        [HttpGet]
+        public async Task<IEnumerable<Item>> GetAll()
+        {
+            var models = await this.itemService.GetAllItemsAsync();
 
-			var host = this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
+            return models.Select(item => item.ToWebModel(this.Host + this.config["PathTo:ItemPhotos"], this.encryptionService)).ToList();
+        }
 
-			return models.Select(item => item.ToWebModel(host + this.config["PathTo:ItemPhotos"])).ToList();
-		}
+        [HttpGet("{id}")]
+        public async Task<Item> GetById(Guid id)
+        {
+            var model = await this.itemService.GetItemByIdAsync(id);
 
-		[HttpGet("{id}")]
-		public async Task<Item> GetById(Guid id)
-		{
-			var model = await this.itemService.GetItemByIdAsync(id);
+            return model.ToWebModel(this.Host + this.config["PathTo:ItemPhotos"], this.encryptionService);
+        }
 
-			var host = this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
+        //[OptimisticConcurrencyFilter]
+        [HttpPost]
+        //public async Task<Item> Post()
+        public async Task<IActionResult> Post([FromBody] CreateItemCommand command)
+        {
+            IActionResult result;
+            if (!this.ContainsCorrectDomainModel(nameof(CreateItemCommand), out result))
+            {
+                return await Task.FromResult(result);
+            }
 
-			return model.ToWebModel(host + this.config["PathTo:ItemPhotos"]);
-		}
+            return await Task.FromResult(new ObjectResult(command));
+        }
 
-		//[OptimisticConcurrencyFilter]
-		//[HttpPut]
-		//public async Task<Item> Put(int id)
-		//{
-		//	//var model = await this.itemService.GetItemByIdAsync(id);
+        private bool ContainsCorrectDomainModel(string expectedDomainModel, out IActionResult errorResult)
+        {
+            bool result = true;
+            errorResult = null;
 
-		//	//var host = this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
+            var domainModelTokens =
+                            this.HttpContext.Request.ContentType?
+                                .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                    .FirstOrDefault(item => item.ToLowerInvariant().StartsWith("domain-model="))
+                                    ?.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 
-		//	//return model.ToWebModel(host + this.config["PathTo:ItemPhotos"]);
-		//}
-	}
+            string domainModel = null;
+            if (domainModelTokens.Length == 2)
+            {
+                domainModel = domainModelTokens[1];
+            }
+
+            if (domainModel != expectedDomainModel)
+            {
+                result = false;
+                errorResult = HttpBadRequest("Expected to find 'domain-model=" + expectedDomainModel + "' in Content-Type");
+            }
+
+            return result;
+        }
+
+        private string Host
+        {
+            get
+            {
+                return this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host; ;
+            }
+        }
+    }
 }

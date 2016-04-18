@@ -15,7 +15,7 @@ namespace OxHack.Inventory.Query.Sqlite
 			modelBuilder.Entity<Item>(entity =>
 			{
                 entity.Property(e => e.Id).IsRequired();
-                entity.Property(e => e.Stamp).IsConcurrencyToken();
+                entity.Property(e => e.ConcurrencyId).IsConcurrencyToken();
                 entity.Property(e => e.Appearance).IsRequired();
 				entity.Property(e => e.AssignedLocation).IsRequired();
 				entity.Property(e => e.Category).IsRequired();
