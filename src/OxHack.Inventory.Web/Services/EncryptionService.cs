@@ -24,7 +24,7 @@ namespace OxHack.Inventory.Web.Services
             return keyGenerator.GetBytes(EncryptionService.keyLength);
         }
 
-        internal byte[] Encrypt(string payload, out byte[] iv)
+        internal byte[] EncryptAscii(string payload, out byte[] iv)
         {
             iv = this.GetRandomBytes();
 
@@ -35,6 +35,20 @@ namespace OxHack.Inventory.Web.Services
                     var buffer = Encoding.ASCII.GetBytes(payload.PadRight(EncryptionService.keyLength));
                     var result = encryptor.TransformFinalBlock(buffer, 0, buffer.Length);
 
+                    return result;
+                }
+            }
+        }
+
+        internal string DecryptAscii(byte[] payload, byte[] iv)
+        {
+            using (var provider = new AesCryptoServiceProvider())
+            {
+                using (var decryptor = provider.CreateDecryptor(this.key, iv))
+                {
+                    var buffer = decryptor.TransformFinalBlock(payload, 0, payload.Length);
+
+                    var result = Encoding.ASCII.GetString(buffer);
                     return result;
                 }
             }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OxHack.Inventory.Query.Models;
+using OxHack.Inventory.Web.Services;
 
 namespace OxHack.Inventory.Web.Models
 {
@@ -41,9 +43,9 @@ namespace OxHack.Inventory.Web.Models
 			this.Spec = spec;
 			this.Photos = photos;
             this.ConcurrencyId = concurrencyId;
-		}
+        }
 
-		public Guid Id
+        public Guid Id
 		{
 			get;
 		}

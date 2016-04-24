@@ -5,9 +5,21 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
-    public class NameChanged : IEvent
+    public class NameChanged : IEvent, IConcurrencyAware
     {
-        public Guid Id
+        public NameChanged(Guid aggregateRootId, Guid concurrencyId, string name)
+        {
+            this.AggregateRootId = aggregateRootId;
+            this.ConcurrencyId = concurrencyId;
+            this.Name = name;
+        }
+
+        public Guid AggregateRootId
+        {
+            get;
+        }
+
+        public Guid ConcurrencyId
         {
             get;
         }

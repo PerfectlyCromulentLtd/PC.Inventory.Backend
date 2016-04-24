@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "Microsoft.CSharp": "4.0.1-rc1-final",
+    "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-final",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
     "OxHack.Inventory.Cqrs": "1.0.0-*",
     "System.Threading": "4.0.11-rc1-final"
   }

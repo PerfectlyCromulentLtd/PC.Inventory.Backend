@@ -20,10 +20,10 @@ namespace OxHack.Inventory.Cqrs.Events.Item
                string name,
                string origin,
                int quantity,
-               string spec,
-               IEnumerable<string> photos)
+               string spec
+               )
         {
-            this.Id = id;
+            this.AggregateRootId = id;
             this.AdditionalInformation = additionalInformation;
             this.Appearance = appearance;
             this.AssignedLocation = assignedLocation;
@@ -36,10 +36,9 @@ namespace OxHack.Inventory.Cqrs.Events.Item
             this.Origin = origin;
             this.Quantity = quantity;
             this.Spec = spec;
-            this.Photos = photos;
         }
 
-        public Guid Id
+        public Guid AggregateRootId
         {
             get;
         }
@@ -100,11 +99,6 @@ namespace OxHack.Inventory.Cqrs.Events.Item
         }
 
         public string AdditionalInformation
-        {
-            get;
-        }
-
-        public IEnumerable<string> Photos
         {
             get;
         }

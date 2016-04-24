@@ -8,10 +8,12 @@ using OxHack.Inventory.Web.Models;
 using OxHack.Inventory.Web.Extensions;
 using Microsoft.Extensions.Configuration;
 using OxHack.Inventory.Web.Models.Commands.Item;
-using OxHack.Inventory.Cqrs;
-using System.Security.Cryptography;
-using System.Text;
 using OxHack.Inventory.Web.Services;
+using System.Net;
+using OxHack.Inventory.Web.Models.Commands;
+using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 
 namespace OxHack.Inventory.Web.Controllers
 {
@@ -21,12 +23,20 @@ namespace OxHack.Inventory.Web.Controllers
         private readonly EncryptionService encryptionService;
         private readonly ItemService itemService;
         private readonly IConfiguration config;
+        private readonly ReadOnlyDictionary<string, Type> supportedDomainModelTypesByStringName;
 
         public ItemsController(ItemService itemService, EncryptionService encryptionService, IConfiguration config)
         {
             this.itemService = itemService;
             this.encryptionService = encryptionService;
             this.config = config;
+
+            var supportedDomainModelTypesByStringName = new Dictionary<string, Type>();
+            supportedDomainModelTypesByStringName.Add(nameof(CreateItemCommand), typeof(CreateItemCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeNameCommand), typeof(ChangeNameCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeQuantityCommand), typeof(ChangeQuantityCommand));
+
+            this.supportedDomainModelTypesByStringName = new ReadOnlyDictionary<string, Type>(supportedDomainModelTypesByStringName);
         }
 
         [HttpGet]
@@ -45,51 +55,168 @@ namespace OxHack.Inventory.Web.Controllers
             return model.ToWebModel(this.Host + this.config["PathTo:ItemPhotos"], this.encryptionService);
         }
 
-        //[OptimisticConcurrencyFilter]
         [HttpPost]
-        //public async Task<Item> Post()
         public async Task<IActionResult> Post([FromBody] CreateItemCommand command)
         {
             IActionResult result;
-            if (!this.ContainsCorrectDomainModel(nameof(CreateItemCommand), out result))
+            if (!this.ValidateDomainModel(nameof(CreateItemCommand), out result))
             {
                 return await Task.FromResult(result);
             }
 
-            return await Task.FromResult(new ObjectResult(command));
+            var forget = this.itemService.IssueCommandAsync(command.ToDomainCommand());
+
+            return new HttpStatusCodeResult((int)HttpStatusCode.Accepted);
         }
 
-        private bool ContainsCorrectDomainModel(string expectedDomainModel, out IActionResult errorResult)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] JObject body)
         {
-            bool result = true;
+            IActionResult result;
+            IConcurrencyAwareCommand command;
+            if (!this.ValidatePut(id, body, out command, out result))
+            {
+                return await Task.FromResult(result);
+            }
+
+            try
+            {
+                var forget = this.itemService.IssueCommandAsync(command.ToDomainCommand(this.encryptionService));
+            }
+            catch (CryptographicException e)
+            {
+                return this.HttpBadRequest("Unable to decrypt ConcurrencyId.  This may be a sign your data is stale.");
+            }
+
+            return new HttpStatusCodeResult((int)HttpStatusCode.Accepted);
+        }
+
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> Put(Guid id, [FromBody] ChangeQuantityCommand command)
+        //{
+        //    IActionResult result;
+        //    if (!this.ValidatePut(nameof(ChangeQuantityCommand), id, command, out result))
+        //    {
+        //        return await Task.FromResult(result);
+        //    }
+
+        //    var forget = this.itemService.IssueCommandAsync(command.ToDomainCommand(this.encryptionService));
+
+        //    return new HttpStatusCodeResult((int)HttpStatusCode.Accepted);
+        //}
+
+        private bool ValidatePut(
+            Guid resourceId,
+            JObject body,
+            out IConcurrencyAwareCommand command,
+            out IActionResult errorResult)
+        {
+            bool stillValid = true;
+            command = null;
+            errorResult = null;
+
+            Type commandType;
+            stillValid = this.ValidateDomainModel(out commandType, out errorResult);
+
+            if (stillValid)
+            {
+                command = body.ToObject(commandType) as IConcurrencyAwareCommand;
+
+                if (command == null)
+                {
+                    stillValid = false;
+                    errorResult = this.HttpBadRequest("Could not deserialize request body to Domain Model type.  Are you sure it's in the correct format?");
+                }
+            }
+
+            if (stillValid)
+            {
+                stillValid = this.ValidateCommandId(resourceId, command, out errorResult);
+            }
+
+            return stillValid;
+        }
+
+        private bool ValidateDomainModel(string expectedDomainModel, out IActionResult errorResult)
+        {
+            bool stillValid = true;
+            errorResult = null;
+
+            string actualDomainModel;
+            stillValid = this.ExtractDomainModelFromContentType(out actualDomainModel, out errorResult);
+
+            if (stillValid && actualDomainModel != expectedDomainModel)
+            {
+                stillValid = false;
+                errorResult = this.HttpBadRequest($"Content-Type 'domain-model' value does not match expected Domain Model of '{expectedDomainModel}'");
+            }
+
+            return stillValid;
+        }
+
+        private bool ValidateDomainModel(out Type commandType, out IActionResult errorResult)
+        {
+            bool stillValid = true;
+            errorResult = null;
+
+            string typeName;
+            stillValid = this.ExtractDomainModelFromContentType(out typeName, out errorResult);
+
+            if (stillValid && !this.supportedDomainModelTypesByStringName.ContainsKey(typeName))
+            {
+                stillValid = false;
+                errorResult = this.HttpBadRequest("Content-Type 'domain-model' value does not match supported Domain Models.");
+            }
+
+            commandType = this.supportedDomainModelTypesByStringName[typeName];
+
+            return stillValid;
+        }
+
+        private bool ExtractDomainModelFromContentType(out string domainModel, out IActionResult errorResult)
+        {
+            bool stillValid = true;
+            domainModel = null;
             errorResult = null;
 
             var domainModelTokens =
-                            this.HttpContext.Request.ContentType?
-                                .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                    .FirstOrDefault(item => item.ToLowerInvariant().StartsWith("domain-model="))
-                                    ?.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                this.HttpContext.Request.ContentType?
+                    .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                        .FirstOrDefault(item => item.ToLowerInvariant().StartsWith("domain-model="))
+                        ?.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 
-            string domainModel = null;
-            if (domainModelTokens.Length == 2)
+            if (domainModelTokens == null || domainModelTokens.Length != 2)
+            {
+                stillValid = false;
+                errorResult = this.HttpBadRequest("Could not parse 'domain-model' value from Content-Type header");
+            }
+            else
             {
                 domainModel = domainModelTokens[1];
             }
 
-            if (domainModel != expectedDomainModel)
+            return stillValid;
+        }
+
+        private bool ValidateCommandId(Guid resourceId, IConcurrencyAwareCommand command, out IActionResult errorResult)
+        {
+            bool stillValid = true;
+            errorResult = null;
+
+            if (resourceId != command.Id)
             {
-                result = false;
-                errorResult = HttpBadRequest("Expected to find 'domain-model=" + expectedDomainModel + "' in Content-Type");
+                stillValid = false;
+                errorResult = HttpBadRequest("Resource Id and command Id do not match.");
             }
 
-            return result;
+            return stillValid;
         }
 
         private string Host
         {
             get
             {
-                return this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host; ;
+                return this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
             }
         }
     }

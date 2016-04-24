@@ -1,0 +1,6 @@
+Issues to raise in GitHub:
+
+* Fix dodgy Sqlite config in EventStore project
+		Delete ~\.dnx\runtimes\dnx-clr-win-x86.1.0.0-rc1-final\bin\SQLite.Interop.dll !!!
+		It shouldn't need to be in there!
+* Replace dodgy manual routing with real MVC 6 Custom routing (once documentation is available)

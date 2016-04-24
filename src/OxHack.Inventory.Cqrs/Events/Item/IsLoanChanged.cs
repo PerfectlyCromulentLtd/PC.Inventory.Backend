@@ -5,9 +5,14 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
-    public class IsLoanChanged : IEvent
+    public class IsLoanChanged : IEvent, IConcurrencyAware
     {
-        public Guid Id
+        public Guid AggregateRootId
+        {
+            get;
+        }
+
+        public Guid ConcurrencyId
         {
             get;
         }

@@ -10,7 +10,8 @@ namespace OxHack.Inventory.Query.Repositories
 	public interface IItemRepository
 	{
 		Task<IEnumerable<Item>> GetAllItemsAsync();
-
 		Task<Item> GetByIdAsync(Guid id);
-	}
+        Task CreateItemAsync(Item item);
+        Task UpdateItemAsync(Item item);
+    }
 }
