@@ -14,11 +14,6 @@
         "System.Linq": "4.1.0-rc1-final",
         "System.Runtime": "4.1.0-rc1-final"
       }
-    },
-
-    "dnxcore50": {
-      "dependencies": {
-      }
     }
   },
 

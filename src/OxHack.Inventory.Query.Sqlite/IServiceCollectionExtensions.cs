@@ -20,6 +20,10 @@ namespace OxHack.Inventory.Query.Sqlite
             optionsBuilder.UseSqlite(connectionString);
 
             @this.AddSingleton<DbContextOptions>(sp => optionsBuilder.Options);
+
+            OptimisticConcurrencyLock syncLock = new OptimisticConcurrencyLock();
+            @this.AddSingleton<OptimisticConcurrencyLock>(sp => syncLock);
+
             @this.AddTransient<IItemRepository, ItemRepository>();
 		}
     }

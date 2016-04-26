@@ -9,27 +9,6 @@ namespace OxHack.Inventory.Query.Models
 {
     public class Item : IConcurrencyAware
     {
-        private Item(Item original, Action<Item> mutation)
-            : this(
-                  original.Id,
-                  original.AdditionalInformation,
-                  original.Appearance,
-                  original.AssignedLocation,
-                  original.Category,
-                  original.CurrentLocation,
-                  original.IsLoan,
-                  original.Manufacturer,
-                  original.Model,
-                  original.Name,
-                  original.Origin,
-                  original.Quantity,
-                  original.Spec,
-                  original.Photos,
-                  original.ConcurrencyId)
-        {
-            mutation(this);
-        }
-
         public Item(
             Guid id,
             string additionalInformation,

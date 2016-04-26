@@ -16,10 +16,11 @@ namespace OxHack.Inventory.Query.Sqlite
 			modelBuilder.Entity<Item>(entity =>
 			{
                 entity.Property(e => e.Id).IsRequired();
-                entity.Property(e => e.ConcurrencyId)
-                    //.ForSqliteHasDefaultValueSql(
-                    .ValueGeneratedOnAddOrUpdate()
-                    .IsConcurrencyToken();
+                entity.Property(e => e.ConcurrencyId);
+                // disabled until EF7 supports offline concurrency token generation
+                // See https://github.com/aspnet/EntityFramework/issues/2195
+                //.ValueGeneratedOnAddOrUpdate()
+                //.IsConcurrencyToken();
                 entity.Property(e => e.Appearance).IsRequired();
 				entity.Property(e => e.AssignedLocation).IsRequired();
 				entity.Property(e => e.Category).IsRequired();
