@@ -1,9 +1,10 @@
-﻿using System;
+﻿using OxHack.Inventory.Cqrs.Events.Item;
+using System;
 using System.Linq;
 
 namespace OxHack.Inventory.Cqrs.Commands.Item
 {
-    public class CreateItemCommand : ICommand
+    public class CreateItemCommand : ICommand, IMapToEvent<ItemCreated>
     {
         public CreateItemCommand(
            Guid aggregateRootId,
@@ -98,6 +99,24 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
         public string AdditionalInformation
         {
             get;
+        }
+
+        public ItemCreated GetEvent()
+        {
+            return new ItemCreated(
+                this.AggregateRootId,
+                this.AdditionalInformation,
+                this.Appearance,
+                this.AssignedLocation,
+                this.Category,
+                this.CurrentLocation,
+                this.IsLoan,
+                this.Manufacturer,
+                this.Model,
+                this.Name,
+                this.Origin,
+                this.Quantity,
+                this.Spec);
         }
     }
 }

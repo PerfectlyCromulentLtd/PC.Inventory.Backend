@@ -12,7 +12,7 @@ using OxHack.Inventory.Cqrs.Events.Item;
 
 namespace OxHack.Inventory.EventStore
 {
-	public static class IServiceCollectionExtensions
+	public static class StartupExtensions
 	{
 		public static void AddEventStore(this IServiceCollection @this, IConfigurationRoot configuration)
 		{

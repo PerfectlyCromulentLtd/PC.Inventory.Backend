@@ -7,6 +7,13 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 {
     public class SpecChanged : IEvent, IConcurrencyAware
     {
+        public SpecChanged(Guid aggregateRootId, Guid concurrencyId, string spec)
+        {
+            this.AggregateRootId = aggregateRootId;
+            this.ConcurrencyId = concurrencyId;
+            this.Spec = spec;
+        }
+
         public Guid AggregateRootId
         {
             get;

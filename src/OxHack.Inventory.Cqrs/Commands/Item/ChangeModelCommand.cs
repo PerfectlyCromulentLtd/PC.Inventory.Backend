@@ -1,8 +1,9 @@
-﻿using System;
+﻿using OxHack.Inventory.Cqrs.Events.Item;
+using System;
 
 namespace OxHack.Inventory.Cqrs.Commands.Item
 {
-    public class ChangeModelCommand : ICommand, IConcurrencyAware
+    public class ChangeModelCommand : ICommand, IConcurrencyAware, IMapToEvent<ModelChanged>
     {
         public ChangeModelCommand(Guid aggregateRootId, Guid concurrencyId, string model)
         {
@@ -24,6 +25,11 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
         public string Model
         {
             get;
+        }
+
+        public ModelChanged GetEvent()
+        {
+            return new ModelChanged(this.AggregateRootId, this.ConcurrencyId, this.Model);
         }
     }
 }

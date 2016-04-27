@@ -1,8 +1,9 @@
-﻿using System;
+﻿using OxHack.Inventory.Cqrs.Events.Item;
+using System;
 
 namespace OxHack.Inventory.Cqrs.Commands.Item
 {
-    public class ChangeOriginCommand : ICommand, IConcurrencyAware
+    public class ChangeOriginCommand : ICommand, IConcurrencyAware, IMapToEvent<OriginChanged>
     {
         public ChangeOriginCommand(Guid aggregateRootId, Guid concurrencyId, string origin)
         {
@@ -24,6 +25,11 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
         public string Origin
         {
             get;
+        }
+
+        public OriginChanged GetEvent()
+        {
+            return new OriginChanged(this.AggregateRootId, this.ConcurrencyId, this.Origin);
         }
     }
 }

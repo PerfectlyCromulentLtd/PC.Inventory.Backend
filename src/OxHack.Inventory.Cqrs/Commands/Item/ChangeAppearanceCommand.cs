@@ -1,8 +1,9 @@
-﻿using System;
+﻿using OxHack.Inventory.Cqrs.Events.Item;
+using System;
 
 namespace OxHack.Inventory.Cqrs.Commands.Item
 {
-    public class ChangeAppearanceCommand : ICommand, IConcurrencyAware
+    public class ChangeAppearanceCommand : ICommand, IConcurrencyAware, IMapToEvent<AppearanceChanged>
     {
         public ChangeAppearanceCommand(Guid aggregateRootId, Guid concurrencyId, string appearance)
         {
@@ -24,6 +25,11 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
         public string Appearance
         {
             get;
+        }
+
+        public AppearanceChanged GetEvent()
+        {
+            return new AppearanceChanged(this.AggregateRootId, this.ConcurrencyId, this.Appearance);
         }
     }
 }

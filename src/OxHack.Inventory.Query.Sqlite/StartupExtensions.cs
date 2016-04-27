@@ -7,7 +7,7 @@ using OxHack.Inventory.Query.Sqlite.Repositories;
 
 namespace OxHack.Inventory.Query.Sqlite
 {
-	public static class IServiceCollectionExtensions
+	public static class StartupExtensions
     {
         public static void RegisterRepositories(this IServiceCollection @this, IConfigurationRoot configuration)
         {

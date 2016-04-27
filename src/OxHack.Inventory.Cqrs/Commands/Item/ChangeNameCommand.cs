@@ -1,8 +1,9 @@
-﻿using System;
+﻿using OxHack.Inventory.Cqrs.Events.Item;
+using System;
 
 namespace OxHack.Inventory.Cqrs.Commands.Item
 {
-    public class ChangeNameCommand : ICommand, IConcurrencyAware
+    public class ChangeNameCommand : ICommand, IConcurrencyAware, IMapToEvent<NameChanged>
     {
         public ChangeNameCommand(Guid aggregateRootId, Guid concurrencyId, string name)
         {
@@ -24,6 +25,11 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
         public string Name
         {
             get;
+        }
+
+        public NameChanged GetEvent()
+        {
+            return new NameChanged(this.AggregateRootId, this.ConcurrencyId, this.Name);
         }
     }
 }

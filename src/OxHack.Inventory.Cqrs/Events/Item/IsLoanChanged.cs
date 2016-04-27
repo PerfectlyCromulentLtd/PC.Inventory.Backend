@@ -7,6 +7,13 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 {
     public class IsLoanChanged : IEvent, IConcurrencyAware
     {
+        public IsLoanChanged(Guid aggregateRootId, Guid concurrencyId, bool isLoan)
+        {
+            this.AggregateRootId = aggregateRootId;
+            this.ConcurrencyId = concurrencyId;
+            this.IsLoan = isLoan;
+        }
+
         public Guid AggregateRootId
         {
             get;

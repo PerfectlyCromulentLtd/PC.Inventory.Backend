@@ -2,7 +2,7 @@
 
 namespace OxHack.Inventory.Services
 {
-    public static class IServiceCollectionExtensions
+    public static class StartupExtensions
     {
         public static void AddDomainServices(this IServiceCollection @this)
         {

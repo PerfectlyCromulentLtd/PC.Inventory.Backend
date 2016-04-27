@@ -27,11 +27,7 @@ namespace OxHack.Inventory.Web.Models.Commands.Item
 
         public DomainCommands.ICommand ToDomainCommand(EncryptionService encryptionService)
         {
-            return
-                new DomainCommands.Item.ChangeNameCommand(
-                    this.Id,
-                    this.GetDecryptedConcurrencyId(encryptionService),
-                    this.Name);
+            return new DomainCommands.Item.ChangeNameCommand(this.Id, this.GetDecryptedConcurrencyId(encryptionService), this.Name);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using OxHack.Inventory.Cqrs;
+using OxHack.Inventory.Cqrs.Events;
 using OxHack.Inventory.Cqrs.Events.Item;
 using OxHack.Inventory.Query.Models;
 using OxHack.Inventory.Query.Repositories;
@@ -9,7 +10,20 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Query.Handlers
 {
-    public class ItemQueryModelUpdater : IHandle<ItemCreated>, IHandle<NameChanged>
+    public class ItemQueryModelUpdater :
+        IHandle<ItemCreated>,
+        IHandle<AdditionalInformationChanged>,
+        IHandle<AppearanceChanged>,
+        IHandle<AssignedLocationChanged>,
+        IHandle<CategoryChanged>,
+        IHandle<CurrentLocationChanged>,
+        IHandle<IsLoanChanged>,
+        IHandle<ManufacturerChanged>,
+        IHandle<ModelChanged>,
+        IHandle<NameChanged>,
+        IHandle<OriginChanged>,
+        IHandle<QuantityChanged>,
+        IHandle<SpecChanged>
     {
         private readonly IItemRepository itemRepository;
 
@@ -49,14 +63,50 @@ namespace OxHack.Inventory.Query.Handlers
             }
         }
 
-        public async void Handle(NameChanged message)
+        public async void Handle(AdditionalInformationChanged message) =>
+            await this.SaveMutation(message, item => item.AdditionalInformation = message.AdditionalInformation);
+
+        public async void Handle(AppearanceChanged message) =>
+            await this.SaveMutation(message, item => item.Appearance = message.Appearance);
+
+        public async void Handle(AssignedLocationChanged message) =>
+            await this.SaveMutation(message, item => item.AssignedLocation = message.AssignedLocation);
+
+        public async void Handle(CategoryChanged message) =>
+            await this.SaveMutation(message, item => item.Category = message.Category);
+
+        public async void Handle(CurrentLocationChanged message) =>
+            await this.SaveMutation(message, item => item.CurrentLocation = message.CurrentLocation);
+
+        public async void Handle(IsLoanChanged message) =>
+            await this.SaveMutation(message, item => item.IsLoan = message.IsLoan);
+
+        public async void Handle(ManufacturerChanged message) =>
+            await this.SaveMutation(message, item => item.Manufacturer = message.Manufacturer);
+
+        public async void Handle(ModelChanged message) =>
+            await this.SaveMutation(message, item => item.Model = message.Model);
+
+        public async void Handle(NameChanged message) =>
+            await this.SaveMutation(message, item => item.Name = message.Name);
+
+        public async void Handle(OriginChanged message) =>
+            await this.SaveMutation(message, item => item.Origin = message.Origin);
+
+        public async void Handle(QuantityChanged message) =>
+            await this.SaveMutation(message, item => item.Quantity = message.Quantity);
+
+        public async void Handle(SpecChanged message) =>
+            await this.SaveMutation(message, item => item.Spec = message.Spec);
+
+        private async Task SaveMutation<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent, IConcurrencyAware
         {
             try
             {
-                var item = await this.itemRepository.GetByIdAsync(message.AggregateRootId);
+                var item = await this.itemRepository.GetByIdAsync(@event.AggregateRootId);
 
-                item.ConcurrencyId = message.ConcurrencyId;
-                item.Name = message.Name;
+                mutation(item);
+                item.ConcurrencyId = @event.ConcurrencyId;
 
                 await this.itemRepository.UpdateItemAsync(item);
             }

@@ -33,8 +33,18 @@ namespace OxHack.Inventory.Web.Controllers
 
             var supportedDomainModelTypesByStringName = new Dictionary<string, Type>();
             supportedDomainModelTypesByStringName.Add(nameof(CreateItemCommand), typeof(CreateItemCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeAdditionalInformationCommand), typeof(ChangeAdditionalInformationCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeAppearanceCommand), typeof(ChangeAppearanceCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeAssignedLocationCommand), typeof(ChangeAssignedLocationCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeCategoryCommand), typeof(ChangeCategoryCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeCurrentLocationCommand), typeof(ChangeCurrentLocationCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeIsLoanCommand), typeof(ChangeIsLoanCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeManufacturerCommand), typeof(ChangeManufacturerCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeModelCommand), typeof(ChangeModelCommand));
             supportedDomainModelTypesByStringName.Add(nameof(ChangeNameCommand), typeof(ChangeNameCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeOriginCommand), typeof(ChangeOriginCommand));
             supportedDomainModelTypesByStringName.Add(nameof(ChangeQuantityCommand), typeof(ChangeQuantityCommand));
+            supportedDomainModelTypesByStringName.Add(nameof(ChangeSpecCommand), typeof(ChangeSpecCommand));
 
             this.supportedDomainModelTypesByStringName = new ReadOnlyDictionary<string, Type>(supportedDomainModelTypesByStringName);
         }
@@ -90,20 +100,6 @@ namespace OxHack.Inventory.Web.Controllers
 
             return new HttpStatusCodeResult((int)HttpStatusCode.Accepted);
         }
-
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> Put(Guid id, [FromBody] ChangeQuantityCommand command)
-        //{
-        //    IActionResult result;
-        //    if (!this.ValidatePut(nameof(ChangeQuantityCommand), id, command, out result))
-        //    {
-        //        return await Task.FromResult(result);
-        //    }
-
-        //    var forget = this.itemService.IssueCommandAsync(command.ToDomainCommand(this.encryptionService));
-
-        //    return new HttpStatusCodeResult((int)HttpStatusCode.Accepted);
-        //}
 
         private bool ValidatePut(
             Guid resourceId,
