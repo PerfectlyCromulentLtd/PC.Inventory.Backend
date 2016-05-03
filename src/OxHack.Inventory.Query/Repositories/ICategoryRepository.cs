@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Query.Repositories
 {
-	public interface IPhotoRepository
+	public interface ICategoryRepository
 	{
-		Task AddPhotoToItemAsync(Guid itemId, string photoFilename);
-		Task RemovePhotoFromItemAsync(Guid itemId, string photoFilename);
+		Task<IEnumerable<string>> GetAllCategoriesAsync();
 	}
 }

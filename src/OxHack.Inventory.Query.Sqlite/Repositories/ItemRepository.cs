@@ -38,21 +38,38 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
             }
         }
 
-        public async Task<Item> GetByIdAsync(Guid id)
+        public async Task<Item> GetItemByIdAsync(Guid id)
         {
             using (var dbContext = new InventoryDbContext(this.dbContextOptions))
             {
                 var result = await
-                dbContext.Items
-                    .AsNoTracking()
-                    .IncludeAllMembers()
-                    .SingleOrDefaultAsync(item => item.Id == id.ToString());
+					dbContext.Items
+						.AsNoTracking()
+						.IncludeAllMembers()
+						.SingleOrDefaultAsync(item => item.Id == id.ToString());
 
                 return result?.ToImmutableModel();
             }
-        }
+		}
 
-        public async Task CreateItemAsync(Item item)
+		public async Task<IEnumerable<Item>> GetItemsByCategoryAsync(string category)
+		{
+			using (var dbContext = new InventoryDbContext(this.dbContextOptions))
+			{
+				var items = await
+					dbContext.Items
+						.AsNoTracking()
+						.IncludeAllMembers()
+						.Where(item => item.Category.Trim() == category.Trim())
+						.ToListAsync();
+
+				var immutables = items.Select(item => item.ToImmutableModel());
+
+				return immutables;
+			}
+		}
+
+		public async Task CreateItemAsync(Item item)
         {
             var dbModel = item.ToDbModel();
 
@@ -95,5 +112,5 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
                 }
             }
         }
-    }
+	}
 }

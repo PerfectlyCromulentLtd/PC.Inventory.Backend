@@ -7,6 +7,7 @@ namespace OxHack.Inventory.Services
         public static void AddDomainServices(this IServiceCollection @this)
         {
             @this.AddTransient<ItemService>();
-        }
+			@this.AddTransient<CategoryService>();
+		}
     }
 }

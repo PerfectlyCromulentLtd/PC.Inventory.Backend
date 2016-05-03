@@ -27,12 +27,17 @@ namespace OxHack.Inventory.Services
 
 		public async Task<Item> GetItemByIdAsync(Guid id)
 		{
-			return await this.itemRepo.GetByIdAsync(id);
+			return await this.itemRepo.GetItemByIdAsync(id);
 		}
 
 		public async Task IssueCommandAsync<TCommand>(TCommand command) where TCommand : ICommand
 		{
 			await bus.IssueCommandAsync(command);
+		}
+
+		public async Task<IEnumerable<Item>> GetItemsByCategoryAsync(string category)
+		{
+			return await this.itemRepo.GetItemsByCategoryAsync(category);
 		}
 	}
 }

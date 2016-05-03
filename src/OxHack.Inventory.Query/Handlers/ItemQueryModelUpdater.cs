@@ -105,19 +105,19 @@ namespace OxHack.Inventory.Query.Handlers
 
 		public async void Handle(PhotoAdded message)
 		{
-			await this.photoRepository.AddPhotoToItem(message.AggregateRootId, message.PhotoFilename);
+			await this.photoRepository.AddPhotoToItemAsync(message.AggregateRootId, message.PhotoFilename);
 		}
 
 		public async void Handle(PhotoRemoved message)
 		{
-			await this.photoRepository.RemovePhotoFromItem(message.AggregateRootId, message.PhotoFilename);
+			await this.photoRepository.RemovePhotoFromItemAsync(message.AggregateRootId, message.PhotoFilename);
 		}
 
 		private async Task SaveMutation<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent, IConcurrencyAware
         {
             try
             {
-                var item = await this.itemRepository.GetByIdAsync(@event.AggregateRootId);
+                var item = await this.itemRepository.GetItemByIdAsync(@event.AggregateRootId);
 
                 mutation(item);
                 item.ConcurrencyId = @event.ConcurrencyId;

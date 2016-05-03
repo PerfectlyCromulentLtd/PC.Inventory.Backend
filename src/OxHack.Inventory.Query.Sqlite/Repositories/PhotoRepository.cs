@@ -17,7 +17,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 			this.dbContextOptions = dbContextOptions;
 		}
 
-		public async Task AddPhotoToItem(Guid itemId, string photoFilename)
+		public async Task AddPhotoToItemAsync(Guid itemId, string photoFilename)
 		{
 			using (var dbContext = new InventoryDbContext(this.dbContextOptions))
 			{
@@ -32,7 +32,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 			}
 		}
 
-		public async Task RemovePhotoFromItem(Guid itemId, string photoFilename)
+		public async Task RemovePhotoFromItemAsync(Guid itemId, string photoFilename)
 		{
 			using (var dbContext = new InventoryDbContext(this.dbContextOptions))
 			{

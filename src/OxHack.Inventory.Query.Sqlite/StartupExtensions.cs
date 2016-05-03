@@ -26,6 +26,7 @@ namespace OxHack.Inventory.Query.Sqlite
 
             @this.AddTransient<IItemRepository, ItemRepository>();
 			@this.AddTransient<IPhotoRepository, PhotoRepository>();
+			@this.AddTransient<ICategoryRepository, CategoryRepository>();
 		}
     }
 }

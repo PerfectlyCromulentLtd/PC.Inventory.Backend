@@ -50,14 +50,24 @@ namespace OxHack.Inventory.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Item>> GetAll()
+        public async Task<IEnumerable<Item>> GetAll([FromQuery] string category = null)
         {
-            var models = await this.itemService.GetAllItemsAsync();
+			bool byCategory = category != null;
 
+			IEnumerable<Query.Models.Item> models;
+			if (byCategory)
+			{
+				models = await this.itemService.GetItemsByCategoryAsync(category);
+			}
+			else
+			{
+				models = await this.itemService.GetAllItemsAsync();
+			}
+			
             return models.Select(item => item.ToWebModel(this.Host + this.config["PathTo:ItemPhotos"], this.encryptionService)).ToList();
         }
 
-        [HttpGet("{id}")]
+		[HttpGet("{id}")]
         public async Task<Item> GetById(Guid id)
         {
             var model = await this.itemService.GetItemByIdAsync(id);
