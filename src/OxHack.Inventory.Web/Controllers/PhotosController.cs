@@ -23,7 +23,7 @@ namespace OxHack.Inventory.Web.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IEnumerable<Uri>> GetAll(Guid itemId)
+		public async Task<IEnumerable<Uri>> GetItemPhotos(Guid itemId)
 		{
 			var model = await this.itemService.GetItemByIdAsync(itemId);
 

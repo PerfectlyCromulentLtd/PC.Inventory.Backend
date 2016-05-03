@@ -25,6 +25,7 @@ namespace OxHack.Inventory.Query.Sqlite
             @this.AddSingleton<OptimisticConcurrencyLock>(sp => syncLock);
 
             @this.AddTransient<IItemRepository, ItemRepository>();
+			@this.AddTransient<IPhotoRepository, PhotoRepository>();
 		}
     }
 }

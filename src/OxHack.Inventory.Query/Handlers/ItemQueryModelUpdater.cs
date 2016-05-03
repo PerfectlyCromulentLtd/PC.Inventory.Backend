@@ -23,14 +23,18 @@ namespace OxHack.Inventory.Query.Handlers
         IHandle<NameChanged>,
         IHandle<OriginChanged>,
         IHandle<QuantityChanged>,
-        IHandle<SpecChanged>
-    {
+        IHandle<SpecChanged>,
+		IHandle<PhotoAdded>,
+		IHandle<PhotoRemoved>
+	{
         private readonly IItemRepository itemRepository;
+		private readonly IPhotoRepository photoRepository;
 
-        public ItemQueryModelUpdater(IItemRepository itemRepository)
+		public ItemQueryModelUpdater(IItemRepository itemRepository, IPhotoRepository photoRepository)
         {
             this.itemRepository = itemRepository;
-        }
+			this.photoRepository = photoRepository;
+		}
 
         public async void Handle(ItemCreated message)
         {
@@ -99,7 +103,17 @@ namespace OxHack.Inventory.Query.Handlers
         public async void Handle(SpecChanged message) =>
             await this.SaveMutation(message, item => item.Spec = message.Spec);
 
-        private async Task SaveMutation<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent, IConcurrencyAware
+		public async void Handle(PhotoAdded message)
+		{
+			await this.photoRepository.AddPhotoToItem(message.AggregateRootId, message.PhotoFilename);
+		}
+
+		public async void Handle(PhotoRemoved message)
+		{
+			await this.photoRepository.RemovePhotoFromItem(message.AggregateRootId, message.PhotoFilename);
+		}
+
+		private async Task SaveMutation<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent, IConcurrencyAware
         {
             try
             {

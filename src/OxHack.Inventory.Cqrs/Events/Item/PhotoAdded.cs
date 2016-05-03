@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
-    public class QuantityChanged : IEvent, IConcurrencyAware
+    public class PhotoAdded : IEvent
     {
-        public QuantityChanged(Guid aggregateRootId, Guid concurrencyId, int quantity)
+        public PhotoAdded(Guid aggregateRootId, string photoFilename)
         {
             this.AggregateRootId = aggregateRootId;
-            this.ConcurrencyId = concurrencyId;
-            this.Quantity = quantity;
+            this.PhotoFilename = photoFilename;
         }
 
         public Guid AggregateRootId
@@ -19,12 +18,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
             get;
         }
 
-        public Guid ConcurrencyId
-        {
-            get;
-        }
-
-        public int Quantity
+        public string PhotoFilename
         {
             get;
         }

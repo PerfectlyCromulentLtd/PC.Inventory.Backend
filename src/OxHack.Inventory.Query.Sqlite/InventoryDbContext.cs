@@ -30,8 +30,25 @@ namespace OxHack.Inventory.Query.Sqlite
 			modelBuilder.Entity<Photo>(entity =>
 			{
 				entity.HasKey(e => e.Filename);
-				entity.HasOne(d => d.Item).WithMany(p => p.Photos).HasForeignKey(d => d.ItemId).OnDelete(DeleteBehavior.Restrict);
+				entity
+					.HasOne(photo => photo.Item)
+					.WithMany(item => item.Photos)
+					.HasForeignKey(photo => photo.ItemId)
+					.OnDelete(DeleteBehavior.Restrict);
 			});
+
+			//modelBuilder.Entity<Category>(entity =>
+			//{
+			//	entity.HasKey(e => e.Id);
+			//	entity
+			//		.HasOne<Category>(category => category.Parent)
+			//		.WithMany()
+			//		.HasForeignKey(category => category.ParentId)
+			//		.OnDelete(DeleteBehavior.Restrict);
+			//	entity
+			//		.HasMany<Item>(category => category.Items)
+			//		.WithOne(item => item.Category);
+			//});
 		}
 
 		internal virtual DbSet<Item> Items

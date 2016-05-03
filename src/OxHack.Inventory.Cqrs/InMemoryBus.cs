@@ -37,9 +37,14 @@ namespace OxHack.Inventory.Cqrs
             this.eventStore.StoreEvent(@event);
 
             await this.InvokeEventHandlers<TMessage>(@event);
-        }
+		}
 
-        private async Task InvokeEventHandlers<TMessage>(TMessage @event) where TMessage : IEvent
+		public async Task ReplayEventAsync<TMessage>(TMessage @event) where TMessage : IEvent
+		{
+			await this.InvokeEventHandlers<TMessage>(@event);
+		}
+
+		private async Task InvokeEventHandlers<TMessage>(TMessage @event) where TMessage : IEvent
         {
             var type = @event.GetType();
 
@@ -76,5 +81,5 @@ namespace OxHack.Inventory.Cqrs
 
             eventHandlers.Add(DelegateAdjuster.CastArgument<IEvent, TMessage>(@event => handler.Handle(@event)));
         }
-    }
+	}
 }

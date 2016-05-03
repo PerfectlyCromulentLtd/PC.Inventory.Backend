@@ -14,21 +14,23 @@ namespace OxHack.Inventory.Query
             var provider = @this.BuildServiceProvider();
 
             var bus = provider.GetService<IBus>();
-            var handler = provider.GetService<ItemQueryModelUpdater>();
+            var itemHandler = provider.GetService<ItemQueryModelUpdater>();
 
-            bus.RegisterEventHandler<ItemCreated>(handler);
-            bus.RegisterEventHandler<AdditionalInformationChanged>(handler);
-            bus.RegisterEventHandler<AppearanceChanged>(handler);
-            bus.RegisterEventHandler<AssignedLocationChanged>(handler);
-            bus.RegisterEventHandler<CategoryChanged>(handler);
-            bus.RegisterEventHandler<CurrentLocationChanged>(handler);
-            bus.RegisterEventHandler<IsLoanChanged>(handler);
-            bus.RegisterEventHandler<ManufacturerChanged>(handler);
-            bus.RegisterEventHandler<ModelChanged>(handler);
-            bus.RegisterEventHandler<NameChanged>(handler);
-            bus.RegisterEventHandler<OriginChanged>(handler);
-            bus.RegisterEventHandler<QuantityChanged>(handler);
-            bus.RegisterEventHandler<SpecChanged>(handler);
-        }
+			bus.RegisterEventHandler<ItemCreated>(itemHandler);
+			bus.RegisterEventHandler<AdditionalInformationChanged>(itemHandler);
+            bus.RegisterEventHandler<AppearanceChanged>(itemHandler);
+            bus.RegisterEventHandler<AssignedLocationChanged>(itemHandler);
+            bus.RegisterEventHandler<CategoryChanged>(itemHandler);
+            bus.RegisterEventHandler<CurrentLocationChanged>(itemHandler);
+            bus.RegisterEventHandler<IsLoanChanged>(itemHandler);
+            bus.RegisterEventHandler<ManufacturerChanged>(itemHandler);
+            bus.RegisterEventHandler<ModelChanged>(itemHandler);
+            bus.RegisterEventHandler<NameChanged>(itemHandler);
+            bus.RegisterEventHandler<OriginChanged>(itemHandler);
+            bus.RegisterEventHandler<QuantityChanged>(itemHandler);
+            bus.RegisterEventHandler<SpecChanged>(itemHandler);
+			bus.RegisterEventHandler<PhotoAdded>(itemHandler);
+			bus.RegisterEventHandler<PhotoRemoved>(itemHandler);
+		}
     }
 }

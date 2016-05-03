@@ -123,6 +123,7 @@ namespace OxHack.Inventory.Query.Models
         public IEnumerable<string> Photos
         {
             get;
+			internal set;
         }
         public Guid ConcurrencyId
         {

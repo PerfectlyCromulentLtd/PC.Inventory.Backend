@@ -9,15 +9,15 @@ using OxHack.Inventory.Cqrs.Commands;
 
 namespace OxHack.Inventory.Services
 {
-    public class ItemService
-    {
-        private readonly IBus bus;
-        private readonly IItemRepository itemRepo;
+	public class ItemService
+	{
+		private readonly IBus bus;
+		private readonly IItemRepository itemRepo;
 
 		public ItemService(IItemRepository itemRepo, IBus bus)
 		{
 			this.itemRepo = itemRepo;
-            this.bus = bus;
+			this.bus = bus;
 		}
 
 		public async Task<IEnumerable<Item>> GetAllItemsAsync()
@@ -30,9 +30,9 @@ namespace OxHack.Inventory.Services
 			return await this.itemRepo.GetByIdAsync(id);
 		}
 
-        public async Task IssueCommandAsync<TCommand>(TCommand command) where TCommand : ICommand
-        {
-            await bus.IssueCommandAsync(command);
-        }
+		public async Task IssueCommandAsync<TCommand>(TCommand command) where TCommand : ICommand
+		{
+			await bus.IssueCommandAsync(command);
+		}
 	}
 }

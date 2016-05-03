@@ -80,7 +80,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
             {
                 using (var dbContext = new InventoryDbContext(this.dbContextOptions))
                 {
-                    var concurrencyId = dbContext.Items.AsNoTracking().SingleOrDefault(record => record.Id == dbModel.Id)?.ConcurrencyId;
+					var concurrencyId = dbContext.Items.AsNoTracking().Where(record => record.Id == dbModel.Id).Select(record => record.ConcurrencyId).SingleOrDefault();
 
                     if (concurrencyId != dbModel.ConcurrencyId)
                     {
