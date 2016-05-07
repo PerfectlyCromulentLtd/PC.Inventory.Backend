@@ -244,3 +244,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /src/OxHack.Inventory.Web/wwwroot/images/items
+/data/inventory.db.bak

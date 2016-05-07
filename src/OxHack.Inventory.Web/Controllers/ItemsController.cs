@@ -50,7 +50,7 @@ namespace OxHack.Inventory.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Item>> GetAll([FromQuery] string category = null)
+		public async Task<IEnumerable<Item>> GetAll([FromQuery] string category = null)
         {
 			bool byCategory = category != null;
 

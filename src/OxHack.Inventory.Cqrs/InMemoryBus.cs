@@ -10,25 +10,25 @@ namespace OxHack.Inventory.Cqrs
 {
     public class InMemoryBus : IBus
     {
-        private Dictionary<Type, Action<ICommand>> commandHandlersByType;
-        private Dictionary<Type, List<Action<IEvent>>> eventHandlersByType;
+        private Dictionary<Type, Func<ICommand, Task>> commandHandlersByType;
+        private Dictionary<Type, List<Func<IEvent, Task>>> eventHandlersByType;
         private readonly IEventStore eventStore;
 
         public InMemoryBus(IEventStore eventStore)
         {
             this.eventStore = eventStore;
-            this.commandHandlersByType = new Dictionary<Type, Action<ICommand>>();
-            this.eventHandlersByType = new Dictionary<Type, List<Action<IEvent>>>();
+            this.commandHandlersByType = new Dictionary<Type, Func<ICommand, Task>>();
+            this.eventHandlersByType = new Dictionary<Type, List<Func<IEvent, Task>>>();
         }
 
         public async Task IssueCommandAsync<TMessage>(TMessage command) where TMessage : ICommand
         {
             var type = command.GetType();
 
-            Action<ICommand> handler;
+			Func<ICommand, Task> handler;
             if (this.commandHandlersByType.TryGetValue(type, out handler))
             {
-                await Task.Run(() => handler(command));
+                await handler(command);
             }
         }
 
@@ -48,12 +48,13 @@ namespace OxHack.Inventory.Cqrs
         {
             var type = @event.GetType();
 
-            List<Action<IEvent>> handlers;
+            List<Func<IEvent, Task>> handlers;
             if (this.eventHandlersByType.TryGetValue(type, out handlers))
             {
-                var tasks = handlers.Select(handler => Task.Run(() => handler(@event)));
-
-                await Task.WhenAll(tasks);
+				foreach (var handler in handlers)
+				{
+					await handler(@event);
+				}
             }
         }
 
@@ -72,10 +73,10 @@ namespace OxHack.Inventory.Cqrs
         {
             var type = typeof(TMessage);
 
-            List<Action<IEvent>> eventHandlers;
+            List<Func<IEvent, Task>> eventHandlers;
             if (!this.eventHandlersByType.TryGetValue(type, out eventHandlers))
             {
-                eventHandlers = new List<Action<IEvent>>();
+                eventHandlers = new List<Func<IEvent, Task>>();
                 this.eventHandlersByType.Add(type, eventHandlers);
             }
 

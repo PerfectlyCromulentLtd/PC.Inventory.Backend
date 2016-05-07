@@ -13,12 +13,12 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
     public class ItemRepository : IItemRepository
     {
         private readonly DbContextOptions dbContextOptions;
-        private readonly OptimisticConcurrencyLock optimisticConcurrencyLock;
+        private readonly SqliteWriteLock writeLock;
 
-        public ItemRepository(DbContextOptions dbContextOptions, OptimisticConcurrencyLock syncLock)
+        public ItemRepository(DbContextOptions dbContextOptions, SqliteWriteLock writeLock)
         {
             this.dbContextOptions = dbContextOptions;
-            this.optimisticConcurrencyLock = syncLock;
+            this.writeLock = writeLock;
         }
 
         public async Task<IEnumerable<Item>> GetAllItemsAsync()
@@ -75,7 +75,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 
             // Hack until EF7 supports offline concurrency token generation
             // See https://github.com/aspnet/EntityFramework/issues/2195
-            lock (this.optimisticConcurrencyLock)
+            lock (this.writeLock)
             {
                 dbModel.ConcurrencyId = Guid.NewGuid().ToString();
 
@@ -93,7 +93,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 
             // Hack until EF7 supports offline concurrency token generation
             // See https://github.com/aspnet/EntityFramework/issues/2195
-            lock (this.optimisticConcurrencyLock)
+            lock (this.writeLock)
             {
                 using (var dbContext = new InventoryDbContext(this.dbContextOptions))
                 {

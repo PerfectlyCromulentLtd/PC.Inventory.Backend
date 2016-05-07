@@ -31,9 +31,8 @@ namespace OxHack.Inventory.Web.Extensions
                 @this.Origin,
                 @this.Quantity,
                 @this.Spec,
-                @this.Photos?.ToUris(photoPath),
-                encryptedConcurrencyId
-            );
+				@this.Photos?.ToUris(photoPath),
+                encryptedConcurrencyId);
         }
 
         public static IEnumerable<Uri> ToUris(this IEnumerable<string> @this, string path)

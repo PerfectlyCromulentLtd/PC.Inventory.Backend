@@ -27,7 +27,10 @@ namespace OxHack.Inventory.Query.Handlers
 		IHandle<PhotoAdded>,
 		IHandle<PhotoRemoved>
 	{
-        private readonly IItemRepository itemRepository;
+		private static string PlaceholderImage
+			=> "placeholder.jpg";
+
+		private readonly IItemRepository itemRepository;
 		private readonly IPhotoRepository photoRepository;
 
 		public ItemQueryModelUpdater(IItemRepository itemRepository, IPhotoRepository photoRepository)
@@ -36,7 +39,7 @@ namespace OxHack.Inventory.Query.Handlers
 			this.photoRepository = photoRepository;
 		}
 
-        public async void Handle(ItemCreated message)
+        public async Task Handle(ItemCreated message)
         {
             try
             {
@@ -59,6 +62,7 @@ namespace OxHack.Inventory.Query.Handlers
                         Guid.Empty);
 
                 await this.itemRepository.CreateItemAsync(model);
+				await this.photoRepository.AddPhotoToItemAsync(message.AggregateRootId, ItemQueryModelUpdater.PlaceholderImage);
             }
             catch
             {
@@ -67,48 +71,49 @@ namespace OxHack.Inventory.Query.Handlers
             }
         }
 
-        public async void Handle(AdditionalInformationChanged message) =>
+        public async Task Handle(AdditionalInformationChanged message) =>
             await this.SaveMutation(message, item => item.AdditionalInformation = message.AdditionalInformation);
 
-        public async void Handle(AppearanceChanged message) =>
+        public async Task Handle(AppearanceChanged message) =>
             await this.SaveMutation(message, item => item.Appearance = message.Appearance);
 
-        public async void Handle(AssignedLocationChanged message) =>
+        public async Task Handle(AssignedLocationChanged message) =>
             await this.SaveMutation(message, item => item.AssignedLocation = message.AssignedLocation);
 
-        public async void Handle(CategoryChanged message) =>
+        public async Task Handle(CategoryChanged message) =>
             await this.SaveMutation(message, item => item.Category = message.Category);
 
-        public async void Handle(CurrentLocationChanged message) =>
+        public async Task Handle(CurrentLocationChanged message) =>
             await this.SaveMutation(message, item => item.CurrentLocation = message.CurrentLocation);
 
-        public async void Handle(IsLoanChanged message) =>
+        public async Task Handle(IsLoanChanged message) =>
             await this.SaveMutation(message, item => item.IsLoan = message.IsLoan);
 
-        public async void Handle(ManufacturerChanged message) =>
+        public async Task Handle(ManufacturerChanged message) =>
             await this.SaveMutation(message, item => item.Manufacturer = message.Manufacturer);
 
-        public async void Handle(ModelChanged message) =>
+        public async Task Handle(ModelChanged message) =>
             await this.SaveMutation(message, item => item.Model = message.Model);
 
-        public async void Handle(NameChanged message) =>
+        public async Task Handle(NameChanged message) =>
             await this.SaveMutation(message, item => item.Name = message.Name);
 
-        public async void Handle(OriginChanged message) =>
+        public async Task Handle(OriginChanged message) =>
             await this.SaveMutation(message, item => item.Origin = message.Origin);
 
-        public async void Handle(QuantityChanged message) =>
+        public async Task Handle(QuantityChanged message) =>
             await this.SaveMutation(message, item => item.Quantity = message.Quantity);
 
-        public async void Handle(SpecChanged message) =>
+        public async Task Handle(SpecChanged message) =>
             await this.SaveMutation(message, item => item.Spec = message.Spec);
 
-		public async void Handle(PhotoAdded message)
+		public async Task Handle(PhotoAdded message)
 		{
 			await this.photoRepository.AddPhotoToItemAsync(message.AggregateRootId, message.PhotoFilename);
+			var removePlaceholderTask = this.photoRepository.RemovePhotoFromItemAsync(message.AggregateRootId, ItemQueryModelUpdater.PlaceholderImage);
 		}
 
-		public async void Handle(PhotoRemoved message)
+		public async Task Handle(PhotoRemoved message)
 		{
 			await this.photoRepository.RemovePhotoFromItemAsync(message.AggregateRootId, message.PhotoFilename);
 		}

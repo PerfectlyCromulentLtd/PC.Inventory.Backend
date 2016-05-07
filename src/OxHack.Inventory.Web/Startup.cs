@@ -59,11 +59,11 @@ namespace OxHack.Inventory.Web
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
+			if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
-            }
+			}
             else
             {
                 app.UseExceptionHandler("/Home/Error");

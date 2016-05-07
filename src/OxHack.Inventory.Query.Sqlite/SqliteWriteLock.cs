@@ -9,7 +9,7 @@ namespace OxHack.Inventory.Query.Sqlite
     /// Hack until EF7 supports offline concurrency token generation
     /// See https://github.com/aspnet/EntityFramework/issues/2195
     /// </summary>
-    public class OptimisticConcurrencyLock
+    public class SqliteWriteLock
     {
     }
 }

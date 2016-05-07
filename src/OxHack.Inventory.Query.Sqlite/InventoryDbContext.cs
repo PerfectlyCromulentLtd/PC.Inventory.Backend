@@ -1,7 +1,10 @@
 ﻿using Microsoft.Data.Entity;
 using Microsoft.Data.Entity.Infrastructure;
 using Microsoft.Data.Entity.Metadata;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OxHack.Inventory.Query.Sqlite.Models;
+using System;
 
 namespace OxHack.Inventory.Query.Sqlite
 {
@@ -9,7 +12,7 @@ namespace OxHack.Inventory.Query.Sqlite
     {
         public InventoryDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
-        }
+		}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -29,7 +32,7 @@ namespace OxHack.Inventory.Query.Sqlite
 
 			modelBuilder.Entity<Photo>(entity =>
 			{
-				entity.HasKey(e => e.Filename);
+				entity.HasKey(nameof(Photo.Filename), nameof(Photo.ItemId));
 				entity
 					.HasOne(photo => photo.Item)
 					.WithMany(item => item.Photos)

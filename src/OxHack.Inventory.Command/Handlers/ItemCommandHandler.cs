@@ -32,67 +32,67 @@ namespace OxHack.Inventory.Command.Handlers
             this.bus = bus;
         }
 
-        public async void Handle(CreateItemCommand message)
+        public async Task Handle(CreateItemCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeAdditionalInformationCommand message)
+        public async Task Handle(ChangeAdditionalInformationCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeAppearanceCommand message)
+        public async Task Handle(ChangeAppearanceCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeAssignedLocationCommand message)
+        public async Task Handle(ChangeAssignedLocationCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeCategoryCommand message)
+        public async Task Handle(ChangeCategoryCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeCurrentLocationCommand message)
+        public async Task Handle(ChangeCurrentLocationCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeIsLoanCommand message)
+        public async Task Handle(ChangeIsLoanCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeManufacturerCommand message)
+        public async Task Handle(ChangeManufacturerCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeModelCommand message)
+        public async Task Handle(ChangeModelCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeNameCommand message)
+        public async Task Handle(ChangeNameCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeOriginCommand message)
+        public async Task Handle(ChangeOriginCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeQuantityCommand message)
+        public async Task Handle(ChangeQuantityCommand message)
         {
             await this.PublishMappedEvent(message);
         }
 
-        public async void Handle(ChangeSpecCommand message)
+        public async Task Handle(ChangeSpecCommand message)
         {
             await this.PublishMappedEvent(message);
         }
