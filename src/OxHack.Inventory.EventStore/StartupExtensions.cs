@@ -16,15 +16,19 @@ namespace OxHack.Inventory.EventStore
 	{
 		public static void AddEventStore(this IServiceCollection @this, IConfigurationRoot configuration)
 		{
-			// begin hack
-			var dataSet = ConfigurationManager.GetSection("system.data") as DataSet;
-			dataSet.Tables[0].Rows.Add(
-				"SQLite Data Provider",
-				".Net Framework Data Provider for SQLite",
-				"System.Data.SQLite",
-				"System.Data.SQLite.SQLiteFactory, System.Data.SQLite");
-			// end hack
-			var configFactory = new AspNetConfigurationConnectionFactory("Production:SqliteEventStoreConnectionString", "System.Data.SQLite", configuration);
+            //// begin hack
+            //var dataSet = ConfigurationManager.GetSection("system.data") as DataSet;
+            //dataSet.Tables[0].Rows.Add(
+            //	"SQLite Data Provider",
+            //	".Net Framework Data Provider for SQLite",
+            //	"System.Data.SQLite",
+            //	"System.Data.SQLite.SQLiteFactory, System.Data.SQLite");
+            //// end hack
+
+            var providerName = "System.Data.SQLite";
+            var connectionString = configuration["Production:SqliteEventStoreConnectionString"];
+
+            var configFactory = new HackConfigurationConnectionFactory(providerName, connectionString);
 
 			var meh = configFactory.GetDbProviderFactoryType();
 
