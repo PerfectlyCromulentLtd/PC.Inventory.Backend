@@ -1,16 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.Sqlite;
 using NEventStore.Persistence.Sql;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Data.Common;
-using System.Data.SQLite;
 
 namespace OxHack.Inventory.EventStore
 {
-	public class HackConfigurationConnectionFactory : ConfigurationConnectionFactory
+    public class HackConfigurationConnectionFactory : ConfigurationConnectionFactory
 	{
         private readonly string providerName;
         private readonly string connectionString;
@@ -30,7 +25,7 @@ namespace OxHack.Inventory.EventStore
 
         protected override DbProviderFactory GetFactory(ConnectionStringSettings setting)
         {
-            var factory = SQLiteFactory.Instance;
+            var factory = SqliteFactory.Instance;
 
             return factory;
         }

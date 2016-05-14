@@ -10,15 +10,18 @@
       "frameworkAssemblies": {
         "System.Configuration": "4.0.0.0",
         "System.Data": "4.0.0.0"
+      },
+      "dependencies": {
+        "NEventStore": "1.0.0-*",
+        "NEventStore.Persistence.Sql": "1.0.0-*"
       }
     }
   },
   "dependencies": {
-    "NEventStore": "5.2.0",
     "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
-    "System.Data.SQLite": "1.0.100",
     "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-final",
-    "OxHack.Inventory.Cqrs": "1.0.0-*"
+    "OxHack.Inventory.Cqrs": "1.0.0-*",
+    "Microsoft.Data.Sqlite": "1.0.0-rc1-final"
   }
 }
