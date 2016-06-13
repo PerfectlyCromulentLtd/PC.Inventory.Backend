@@ -24,9 +24,6 @@ namespace OxHack.Inventory.Query.Sqlite
 
             @this.AddSingleton<DbContextOptions>(sp => optionsBuilder.Options);
 
-            SqliteWriteLock syncLock = new SqliteWriteLock();
-            @this.AddSingleton<SqliteWriteLock>(sp => syncLock);
-
             @this.AddTransient<IItemRepository, ItemRepository>();
 			@this.AddTransient<IPhotoRepository, PhotoRepository>();
 			@this.AddTransient<ICategoryRepository, CategoryRepository>();
