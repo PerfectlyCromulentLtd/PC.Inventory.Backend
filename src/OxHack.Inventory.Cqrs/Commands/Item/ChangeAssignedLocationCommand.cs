@@ -5,7 +5,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 {
     public class ChangeAssignedLocationCommand : ICommand, IConcurrencyAware, IMapToEvent<AssignedLocationChanged>
     {
-        public ChangeAssignedLocationCommand(Guid aggregateRootId, Guid concurrencyId, string assignedLocation)
+        public ChangeAssignedLocationCommand(Guid aggregateRootId, int concurrencyId, string assignedLocation)
         {
             this.AggregateRootId = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
@@ -17,7 +17,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             get;
         }
 
-        public Guid ConcurrencyId
+        public int ConcurrencyId
         {
             get;
         }

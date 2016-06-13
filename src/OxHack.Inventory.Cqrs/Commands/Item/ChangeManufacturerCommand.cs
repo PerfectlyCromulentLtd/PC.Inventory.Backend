@@ -5,7 +5,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 {
     public class ChangeManufacturerCommand : ICommand, IConcurrencyAware, IMapToEvent<ManufacturerChanged>
     {
-        public ChangeManufacturerCommand(Guid aggregateRootId, Guid concurrencyId, string manufacturer)
+        public ChangeManufacturerCommand(Guid aggregateRootId, int concurrencyId, string manufacturer)
         {
             this.AggregateRootId = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
@@ -17,7 +17,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             get;
         }
 
-        public Guid ConcurrencyId
+        public int ConcurrencyId
         {
             get;
         }

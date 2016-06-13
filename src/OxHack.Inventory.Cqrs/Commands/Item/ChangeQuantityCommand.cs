@@ -5,7 +5,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 {
     public class ChangeQuantityCommand : ICommand, IConcurrencyAware, IMapToEvent<QuantityChanged>
     {
-        public ChangeQuantityCommand(Guid aggregateRootId, Guid concurrencyId, int quantity)
+        public ChangeQuantityCommand(Guid aggregateRootId, int concurrencyId, int quantity)
         {
             this.AggregateRootId = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
@@ -17,7 +17,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             get;
         }
 
-        public Guid ConcurrencyId
+        public int ConcurrencyId
         {
             get;
         }

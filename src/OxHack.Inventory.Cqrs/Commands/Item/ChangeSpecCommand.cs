@@ -5,7 +5,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 {
     public class ChangeSpecCommand : ICommand, IConcurrencyAware, IMapToEvent<SpecChanged>
     {
-        public ChangeSpecCommand(Guid aggregateRootId, Guid concurrencyId, string spec) 
+        public ChangeSpecCommand(Guid aggregateRootId, int concurrencyId, string spec) 
         {
             this.AggregateRootId = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
@@ -17,7 +17,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             get;
         }
 
-        public Guid ConcurrencyId
+        public int ConcurrencyId
         {
             get;
         }

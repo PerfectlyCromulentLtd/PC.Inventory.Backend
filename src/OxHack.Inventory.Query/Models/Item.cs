@@ -24,7 +24,7 @@ namespace OxHack.Inventory.Query.Models
             int quantity,
             string spec,
             IEnumerable<string> photos,
-            Guid concurrencyId)
+            int concurrencyId)
         {
             this.Id = id;
             this.AdditionalInformation = additionalInformation;
@@ -125,7 +125,7 @@ namespace OxHack.Inventory.Query.Models
             get;
 			internal set;
         }
-        public Guid ConcurrencyId
+        public int ConcurrencyId
         {
             get;
             internal set;

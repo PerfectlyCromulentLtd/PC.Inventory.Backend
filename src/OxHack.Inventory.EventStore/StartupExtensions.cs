@@ -1,14 +1,8 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NEventStore;
-using NEventStore.Persistence.Sql;
 using NEventStore.Persistence.Sql.SqlDialects;
-using System.Configuration;
-using System.Data;
 using OxHack.Inventory.Cqrs;
-using OxHack.Inventory.Cqrs.Events.Item;
 
 namespace OxHack.Inventory.EventStore
 {

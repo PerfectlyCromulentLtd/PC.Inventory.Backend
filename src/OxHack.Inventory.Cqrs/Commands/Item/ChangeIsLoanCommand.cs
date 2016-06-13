@@ -5,7 +5,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 {
     public class ChangeIsLoanCommand : ICommand, IConcurrencyAware, IMapToEvent<IsLoanChanged>
     {
-        public ChangeIsLoanCommand(Guid aggregateRootId, Guid concurrencyId, bool isLoan)
+        public ChangeIsLoanCommand(Guid aggregateRootId, int concurrencyId, bool isLoan)
         {
             this.AggregateRootId = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
@@ -17,7 +17,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             get;
         }
 
-        public Guid ConcurrencyId
+        public int ConcurrencyId
         {
             get;
         }

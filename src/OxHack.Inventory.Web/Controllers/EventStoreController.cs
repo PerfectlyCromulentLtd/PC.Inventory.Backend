@@ -17,6 +17,8 @@ using System.Security.Cryptography;
 using Microsoft.AspNet.Hosting;
 using OxHack.Inventory.Cqrs;
 using OxHack.Inventory.Cqrs.Events;
+using OxHack.Inventory.Query.Repositories;
+using OxHack.Inventory.Cqrs.Events.Item;
 
 namespace OxHack.Inventory.Web.Controllers
 {
@@ -26,8 +28,13 @@ namespace OxHack.Inventory.Web.Controllers
 	{
 		private readonly IEventStore eventStore;
 		private readonly IBus bus;
+		private readonly IItemRepository itemRepository;
 
-		public EventStoreController(IHostingEnvironment environment, IEventStore eventStore, IBus bus)
+		public EventStoreController(
+			IHostingEnvironment environment, 
+			IEventStore eventStore, 
+			IBus bus, 
+			IItemRepository itemRepository)
 		{
 			if (!environment.IsDevelopment())
 			{
@@ -36,11 +43,22 @@ namespace OxHack.Inventory.Web.Controllers
 
 			this.eventStore = eventStore;
 			this.bus = bus;
+			this.itemRepository = itemRepository;
 		}
 
 		[HttpGet]
-		public async Task<dynamic> GetAll([FromQuery] bool replay = false)
+		public async Task<dynamic> GetAll([FromQuery] bool replay = false, [FromQuery] bool buildEventsFromData = false)
 		{
+			if (replay && buildEventsFromData)
+			{
+				return this.HttpBadRequest($"{nameof(replay)} and {nameof(buildEventsFromData)} flags are mutually exclusive.");
+			}
+
+			if (buildEventsFromData)
+			{
+				await this.BuildEventsFromData();
+			}
+
 			var events = await Task.FromResult(this.eventStore.GetAllEvents());
 
 			if (replay)
@@ -59,12 +77,36 @@ namespace OxHack.Inventory.Web.Controllers
 			});
 		}
 
-		//[HttpGet("{id}")]
-		//public async Task<Item> GetById(Guid id)
-		//{
-		//    var model = await this.itemService.GetItemByIdAsync(id);
+		private async Task BuildEventsFromData()
+		{
+			var data = await this.itemRepository.GetAllItemsAsync();
+			var itemCreatedEvents =
+				data
+					.Select(item =>
+						new ItemCreated(
+							item.Id,
+							item.AdditionalInformation,
+							item.Appearance,
+							item.AssignedLocation,
+							item.Category,
+							item.CurrentLocation,
+							item.IsLoan,
+							item.Manufacturer,
+							item.Model,
+							item.Name,
+							item.Origin,
+							item.Quantity,
+							item.Spec))
+					.ToList();
 
-		//    return model.ToWebModel(this.Host + this.config["PathTo:ItemPhotos"], this.encryptionService);
-		//}
+			var photoAddedEvents =
+				data
+					.SelectMany(item => item.Photos.Where(photo => photo != "placeholder.jpg").Select((photo, index) => 
+						new PhotoAdded(item.Id, index + 1, photo)))
+					.ToList();
+
+			itemCreatedEvents.ForEach(item => this.eventStore.StoreEvent(item));
+			photoAddedEvents.ForEach(item => this.eventStore.StoreEvent(item));
+		}
 	}
 }

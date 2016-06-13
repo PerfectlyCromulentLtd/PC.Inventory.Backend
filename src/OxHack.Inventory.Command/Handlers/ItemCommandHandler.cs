@@ -101,7 +101,7 @@ namespace OxHack.Inventory.Command.Handlers
         {
             var @event = source.GetEvent();
 
-            await this.bus.RaiseEventAsync(@event);
+			await this.bus.RaiseEventAsync(@event);
         }
     }
 }

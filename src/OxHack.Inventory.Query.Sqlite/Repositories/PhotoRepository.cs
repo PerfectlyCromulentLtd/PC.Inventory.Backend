@@ -11,17 +11,15 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 	public class PhotoRepository : IPhotoRepository
 	{
 		private readonly DbContextOptions dbContextOptions;
-		private readonly SqliteWriteLock writeLock;
 
-		public PhotoRepository(DbContextOptions dbContextOptions, SqliteWriteLock writeLock)
+		public PhotoRepository(DbContextOptions dbContextOptions)
 		{
 			this.dbContextOptions = dbContextOptions;
-			this.writeLock = writeLock;
 		}
 
 		public async Task AddPhotoToItemAsync(Guid itemId, string photoFilename)
 		{
-			lock (this.writeLock)
+			try
 			{
 				using (var dbContext = new InventoryDbContext(this.dbContextOptions))
 				{
@@ -32,25 +30,26 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 					};
 
 					dbContext.Photos.Add(newPhoto, GraphBehavior.SingleObject);
-					dbContext.SaveChanges();
+					await dbContext.SaveChangesAsync();
 				}
+			}
+			catch (Exception e)
+			{
+				throw;
 			}
 		}
 
 		public async Task RemovePhotoFromItemAsync(Guid itemId, string photoFilename)
 		{
-			lock (this.writeLock)
+			using (var dbContext = new InventoryDbContext(this.dbContextOptions))
 			{
-				using (var dbContext = new InventoryDbContext(this.dbContextOptions))
-				{
-					var itemIdAsString = itemId.ToString();
-					var match = dbContext.Photos.SingleOrDefault(photo => photo.ItemId == itemIdAsString && photo.Filename == photoFilename);
+				var itemIdAsString = itemId.ToString();
+				var match = dbContext.Photos.SingleOrDefault(photo => photo.ItemId == itemIdAsString && photo.Filename == photoFilename);
 
-					if (match != null)
-					{
-						dbContext.Photos.Remove(match);
-						dbContext.SaveChanges();
-					}
+				if (match != null)
+				{
+					dbContext.Photos.Remove(match);
+					await dbContext.SaveChangesAsync();
 				}
 			}
 		}
