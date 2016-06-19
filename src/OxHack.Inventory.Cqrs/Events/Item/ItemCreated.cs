@@ -104,6 +104,6 @@ namespace OxHack.Inventory.Cqrs.Events.Item
         }
 
 		public int ConcurrencyId
-			=> 0;
+			=> 1;
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace OxHack.Inventory.Query
+namespace OxHack.Inventory.Cqrs.Exceptions
 {
     [Serializable]
     public class OptimisticConcurrencyException : Exception

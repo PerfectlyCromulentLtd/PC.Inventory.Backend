@@ -59,7 +59,7 @@ namespace OxHack.Inventory.Query.Handlers
                         message.Quantity,
                         message.Spec,
                         null,
-                        default(int));
+                        message.ConcurrencyId);
 
                 await this.itemRepository.CreateItemAsync(model);
 				await this.photoRepository.AddPhotoToItemAsync(message.AggregateRootId, ItemQueryModelUpdater.PlaceholderImage);

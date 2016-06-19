@@ -4,6 +4,9 @@
     "dnx451": {
       "bin": {
         "assembly": "../../src/OxHack.Inventory.EventStore/NEventStore.Persistence.Sql.dll"
+      },
+      "dependencies": {
+        "NEventStore": "1.0.0-*"
       }
     }
   }

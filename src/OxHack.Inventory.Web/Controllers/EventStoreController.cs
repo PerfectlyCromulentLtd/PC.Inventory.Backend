@@ -102,7 +102,7 @@ namespace OxHack.Inventory.Web.Controllers
 			var photoAddedEvents =
 				data
 					.SelectMany(item => item.Photos.Where(photo => photo != "placeholder.jpg").Select((photo, index) => 
-						new PhotoAdded(item.Id, index + 1, photo)))
+						new PhotoAdded(item.Id, index + 2, photo)))
 					.ToList();
 
 			itemCreatedEvents.ForEach(item => this.eventStore.StoreEvent(item));
