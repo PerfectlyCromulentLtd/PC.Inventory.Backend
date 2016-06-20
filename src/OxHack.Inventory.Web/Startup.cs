@@ -38,20 +38,16 @@ namespace OxHack.Inventory.Web
             services.AddSingleton<IConfiguration>(sp => this.Configuration);
             services.AddSingleton<EncryptionService>();
 
-            services.AddEventStore(this.Configuration);
-
-            var provider = services.BuildServiceProvider();
-
-            var eventStore = provider.GetService<IEventStore>();
-            var bus = new InMemoryBus(eventStore);
+            var bus = new InMemoryBus();
             services.AddSingleton<IBus, InMemoryBus>(sp => bus);
-
-            services.RegisterRepositories(this.Configuration);
+			
+			services.RegisterRepositories(this.Configuration);
             services.AddDomainServices();
-            
-            services.RegisterCommandHandlers();
-            services.RegisterQueryModelEventHandlers();
-        }
+
+			services.RegisterQueryModelEventHandlers();
+			services.AddEventStore(this.Configuration);
+			services.RegisterCommandHandlers();
+		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -70,10 +66,10 @@ namespace OxHack.Inventory.Web
             }
 
             app.UseIISPlatformHandler();
-
             app.UseStaticFiles();
+			app.UseStatusCodePages();
 
-            app.UseMvc(routes =>
+			app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",

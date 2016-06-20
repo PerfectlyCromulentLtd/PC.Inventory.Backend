@@ -8,5 +8,6 @@ namespace OxHack.Inventory.Cqrs
     {
         void StoreEvent(IEvent message);
 		IReadOnlyList<StoredEvent> GetAllEvents();
-    }
+		IReadOnlyList<StoredEvent> GetEventsByAggregateId(Guid aggregateId);
+	}
 }

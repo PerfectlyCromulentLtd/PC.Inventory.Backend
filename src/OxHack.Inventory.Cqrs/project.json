@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "description": "OxHack.Inventory.Cqrs Class Library",
   "authors": [ "yargh_000" ],
@@ -7,6 +7,9 @@
   "licenseUrl": "",
 
   "frameworks": {
-    "dnx451": { }
+    "dnx451": {
+      "frameworkAssemblies": {
+      }
+    }
   }
 }

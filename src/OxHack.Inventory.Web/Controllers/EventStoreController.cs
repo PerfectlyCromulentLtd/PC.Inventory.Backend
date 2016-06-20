@@ -1,24 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Mvc;
+using OxHack.Inventory.Cqrs;
+using OxHack.Inventory.Cqrs.Events;
+using OxHack.Inventory.Cqrs.Events.Item;
+using OxHack.Inventory.Query.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using OxHack.Inventory.Services;
-using OxHack.Inventory.Web.Models;
-using OxHack.Inventory.Web.Extensions;
-using Microsoft.Extensions.Configuration;
-using OxHack.Inventory.Web.Models.Commands.Item;
-using OxHack.Inventory.Web.Services;
-using System.Net;
-using OxHack.Inventory.Web.Models.Commands;
-using Newtonsoft.Json.Linq;
-using System.Collections.ObjectModel;
-using System.Security.Cryptography;
-using Microsoft.AspNet.Hosting;
-using OxHack.Inventory.Cqrs;
-using OxHack.Inventory.Cqrs.Events;
-using OxHack.Inventory.Query.Repositories;
-using OxHack.Inventory.Cqrs.Events.Item;
 
 namespace OxHack.Inventory.Web.Controllers
 {
@@ -46,6 +35,19 @@ namespace OxHack.Inventory.Web.Controllers
 			this.itemRepository = itemRepository;
 		}
 
+		[HttpGet("{aggregateId}")]
+		public dynamic GetByAggregateId(Guid aggregateId, [FromQuery] bool replay = false)
+		{
+			var events = this.eventStore.GetEventsByAggregateId(aggregateId);
+
+			if (replay)
+			{
+				this.ReplayEvents(events);
+			}
+
+			return events;
+		}
+
 		[HttpGet]
 		public async Task<dynamic> GetAll([FromQuery] bool replay = false, [FromQuery] bool buildEventsFromData = false)
 		{
@@ -59,15 +61,11 @@ namespace OxHack.Inventory.Web.Controllers
 				await this.BuildEventsFromData();
 			}
 
-			var events = await Task.FromResult(this.eventStore.GetAllEvents());
+			var events = this.eventStore.GetAllEvents();
 
 			if (replay)
 			{
-				var eventsToReplay = events.OrderBy(item => item.CommitStamp).Select(item => item.Event).ToList();
-
-				var replayTasks = eventsToReplay.Select(@event => this.bus.ReplayEventAsync(@event)).ToList();
-
-				await Task.WhenAll(replayTasks);
+				await this.ReplayEvents(events);
 			}
 
 			return events.Select(item => new
@@ -75,6 +73,16 @@ namespace OxHack.Inventory.Web.Controllers
 				Type = item.Event.GetType().Name,
 				EventInfo = item
 			});
+		}
+
+		private async Task ReplayEvents(IEnumerable<StoredEvent> events)
+		{
+			var eventsToReplay = events.OrderBy(item => item.CommitStamp).Select(item => item.Event).ToList();
+
+			foreach (var @event in eventsToReplay)
+			{
+				await this.bus.RaiseEventAsync(@event);
+			}
 		}
 
 		private async Task BuildEventsFromData()

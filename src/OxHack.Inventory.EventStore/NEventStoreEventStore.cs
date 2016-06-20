@@ -51,5 +51,17 @@ namespace OxHack.Inventory.EventStore
 
 			return events.AsReadOnly();
 		}
+
+		public IReadOnlyList<StoredEvent> GetEventsByAggregateId(Guid aggregateId)
+		{
+			var commits = this.eventStore.Advanced.GetFrom(aggregateId.ToString(), int.MinValue, int.MaxValue).ToList();
+
+			var events =
+				commits
+					.SelectMany(commit => commit.Events.Select(@event => new StoredEvent(commit.CheckpointToken, commit.CommitStamp, @event.Body as IEvent)))
+					.ToList();
+
+			return events.AsReadOnly();
+		}
 	}
 }
