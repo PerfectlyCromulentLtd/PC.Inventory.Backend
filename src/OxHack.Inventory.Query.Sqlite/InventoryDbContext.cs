@@ -1,14 +1,10 @@
-﻿using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
-using Microsoft.Data.Entity.Metadata;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using OxHack.Inventory.Query.Sqlite.Models;
-using System;
 
 namespace OxHack.Inventory.Query.Sqlite
 {
-    internal class InventoryDbContext : DbContext
+	internal class InventoryDbContext : DbContext
     {
         public InventoryDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {

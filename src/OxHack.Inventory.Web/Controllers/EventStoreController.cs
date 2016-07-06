@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using OxHack.Inventory.Cqrs;
 using OxHack.Inventory.Cqrs.Events;
 using OxHack.Inventory.Cqrs.Events.Item;
@@ -53,7 +53,7 @@ namespace OxHack.Inventory.Web.Controllers
 		{
 			if (replay && buildEventsFromData)
 			{
-				return this.HttpBadRequest($"{nameof(replay)} and {nameof(buildEventsFromData)} flags are mutually exclusive.");
+				return this.BadRequest($"{nameof(replay)} and {nameof(buildEventsFromData)} flags are mutually exclusive.");
 			}
 
 			if (buildEventsFromData)

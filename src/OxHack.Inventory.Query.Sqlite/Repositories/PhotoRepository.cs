@@ -1,8 +1,6 @@
-﻿using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
 using OxHack.Inventory.Query.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,7 +27,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 						ItemId = itemId.ToString()
 					};
 
-					dbContext.Photos.Add(newPhoto, GraphBehavior.SingleObject);
+					dbContext.Photos.Add(newPhoto);
 					await dbContext.SaveChangesAsync();
 				}
 			}

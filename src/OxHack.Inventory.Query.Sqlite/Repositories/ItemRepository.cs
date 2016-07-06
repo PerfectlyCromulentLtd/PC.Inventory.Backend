@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
 using OxHack.Inventory.Query.Models;
 using OxHack.Inventory.Query.Repositories;
 using OxHack.Inventory.Query.Sqlite.Extensions;
@@ -83,7 +82,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 			var dbModel = item.ToDbModel();
 			using (var dbContext = new InventoryDbContext(this.dbContextOptions))
 			{
-				dbContext.Items.Attach(dbModel, GraphBehavior.SingleObject);
+				dbContext.Items.Attach(dbModel);
 				dbContext.Entry(dbModel).State = EntityState.Modified;
 
 				await dbContext.SaveChangesAsync();

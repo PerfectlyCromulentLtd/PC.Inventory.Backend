@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using OxHack.Inventory.Services;
-using OxHack.Inventory.Web.Models;
-using OxHack.Inventory.Web.Extensions;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using OxHack.Inventory.Services;
+using OxHack.Inventory.Web.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Web.Controllers
 {

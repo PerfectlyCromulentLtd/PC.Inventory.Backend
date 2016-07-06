@@ -1,12 +1,9 @@
 {
   "version": "1.0.0-*",
   "frameworks": {
-    "dnx451": {
+    "net451": {
       "bin": {
         "assembly": "../../src/OxHack.Inventory.EventStore/NEventStore.Persistence.Sql.dll"
-      },
-      "dependencies": {
-        "NEventStore": "1.0.0-*"
       }
     }
   }

@@ -2,18 +2,15 @@
   "version": "1.0.0-*",
   "description": "OxHack.Inventory.Command Class Library",
   "authors": [ "yargh_000" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
   "frameworks": {
-    "dnx451": {
+    "net451": {
       "dependencies": {
       }
     }
   },
   "dependencies": {
-    "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-final",
-    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
+    "Microsoft.Extensions.DependencyInjection": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "OxHack.Inventory.Query": "1.0.0-*"
   }
 }

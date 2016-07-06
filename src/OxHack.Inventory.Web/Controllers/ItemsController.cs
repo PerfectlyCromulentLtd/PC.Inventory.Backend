@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using OxHack.Inventory.Services;
-using OxHack.Inventory.Web.Models;
-using OxHack.Inventory.Web.Extensions;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
+using OxHack.Inventory.Cqrs.Exceptions;
+using OxHack.Inventory.Services;
+using OxHack.Inventory.Web.Extensions;
+using OxHack.Inventory.Web.Models;
+using OxHack.Inventory.Web.Models.Commands;
 using OxHack.Inventory.Web.Models.Commands.Item;
 using OxHack.Inventory.Web.Services;
-using System.Net;
-using OxHack.Inventory.Web.Models.Commands;
-using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
-using OxHack.Inventory.Cqrs.Exceptions;
+using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Web.Controllers
 {
@@ -81,7 +81,7 @@ namespace OxHack.Inventory.Web.Controllers
 			}
 			else
 			{
-				return this.HttpNotFound();
+				return this.NotFound();
 			}
 
 		}
@@ -97,7 +97,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 			if (command == null)
 			{
-				return this.HttpBadRequest($"Request Body must contain a valid {nameof(CreateItemCommand)} object.");
+				return this.BadRequest($"Request Body must contain a valid {nameof(CreateItemCommand)} object.");
 			}
 
 			try
@@ -106,10 +106,10 @@ namespace OxHack.Inventory.Web.Controllers
 			}
 			catch (OptimisticConcurrencyException ex)
 			{
-				return new HttpStatusCodeResult((int)HttpStatusCode.Conflict);
+				return new StatusCodeResult((int)HttpStatusCode.Conflict);
 			}
 
-			return new HttpStatusCodeResult((int)HttpStatusCode.Accepted);
+			return new StatusCodeResult((int)HttpStatusCode.Accepted);
 		}
 
 		[HttpPut("{id}")]
@@ -128,10 +128,10 @@ namespace OxHack.Inventory.Web.Controllers
 			}
 			catch (CryptographicException e)
 			{
-				return this.HttpBadRequest("Unable to decrypt ConcurrencyId.  This may be a sign your data is stale.");
+				return this.BadRequest("Unable to decrypt ConcurrencyId.  This may be a sign your data is stale.");
 			}
 
-			return new HttpStatusCodeResult((int)HttpStatusCode.Accepted);
+			return new StatusCodeResult((int)HttpStatusCode.Accepted);
 		}
 
 		private bool ValidatePut(
@@ -154,7 +154,7 @@ namespace OxHack.Inventory.Web.Controllers
 				if (command == null)
 				{
 					stillValid = false;
-					errorResult = this.HttpBadRequest("Could not deserialize request body to Domain Model type.  Are you sure it's in the correct format?");
+					errorResult = this.BadRequest("Could not deserialize request body to Domain Model type.  Are you sure it's in the correct format?");
 				}
 			}
 
@@ -177,7 +177,7 @@ namespace OxHack.Inventory.Web.Controllers
 			if (stillValid && actualDomainModel != expectedDomainModel)
 			{
 				stillValid = false;
-				errorResult = this.HttpBadRequest($"Content-Type 'domain-model' value does not match expected Domain Model of '{expectedDomainModel}'");
+				errorResult = this.BadRequest($"Content-Type 'domain-model' value does not match expected Domain Model of '{expectedDomainModel}'");
 			}
 
 			return stillValid;
@@ -194,7 +194,7 @@ namespace OxHack.Inventory.Web.Controllers
 			if (stillValid && !this.supportedDomainModelTypesByStringName.ContainsKey(typeName))
 			{
 				stillValid = false;
-				errorResult = this.HttpBadRequest("Content-Type 'domain-model' value does not match supported Domain Models.");
+				errorResult = this.BadRequest("Content-Type 'domain-model' value does not match supported Domain Models.");
 			}
 
 			commandType = this.supportedDomainModelTypesByStringName[typeName];
@@ -217,7 +217,7 @@ namespace OxHack.Inventory.Web.Controllers
 			if (domainModelTokens == null || domainModelTokens.Length != 2)
 			{
 				stillValid = false;
-				errorResult = this.HttpBadRequest("Could not parse 'domain-model' value from Content-Type header");
+				errorResult = this.BadRequest("Could not parse 'domain-model' value from Content-Type header");
 			}
 			else
 			{
@@ -235,7 +235,7 @@ namespace OxHack.Inventory.Web.Controllers
 			if (resourceId != command.Id)
 			{
 				stillValid = false;
-				errorResult = HttpBadRequest("Resource Id and command Id do not match.");
+				errorResult = BadRequest("Resource Id and command Id do not match.");
 			}
 
 			return stillValid;
