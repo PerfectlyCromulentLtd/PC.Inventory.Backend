@@ -26,10 +26,6 @@
     "OxHack.Inventory.Services": "1.0.0-*"
   },
 
-  "commands": {
-    "web": "Microsoft.AspNet.Server.Kestrel --server.urls http://*:5000"
-  },
-
   "frameworks": {
     "net451": {
       "dependencies": {
