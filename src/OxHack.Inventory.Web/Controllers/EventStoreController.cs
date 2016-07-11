@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNet.Hosting;
 using OxHack.Inventory.Cqrs;
 using OxHack.Inventory.Cqrs.Events;
+using System.Dynamic;
 
 namespace OxHack.Inventory.Web.Controllers
 {
@@ -39,24 +40,42 @@ namespace OxHack.Inventory.Web.Controllers
 		}
 
 		[HttpGet]
-		public async Task<dynamic> GetAll([FromQuery] bool replay = false)
+		public async Task<dynamic> GetAll([FromQuery] bool replayToBus = false, [FromQuery] bool replayToMemory = false)
 		{
+			var replay = replayToBus || replayToMemory;
+
 			var events = await Task.FromResult(this.eventStore.GetAllEvents());
+
+			dynamic result =
+				events.Select(item => new
+				{
+					Type = item.Event.GetType().Name,
+					EventInfo = item
+				});
 
 			if (replay)
 			{
 				var eventsToReplay = events.OrderBy(item => item.CommitStamp).Select(item => item.Event).ToList();
 
-				var replayTasks = eventsToReplay.Select(@event => this.bus.ReplayEventAsync(@event)).ToList();
+				if (replayToBus)
+				{
+					var replayTasks = eventsToReplay.Select(@event => this.bus.ReplayEventAsync(@event)).ToList();
+					await Task.WhenAll(replayTasks);
+				}
 
-				await Task.WhenAll(replayTasks);
+				if (replayToMemory)
+				{
+					var aggregates =
+						events
+							.Select(item => item.Event)
+							.GroupBy(item => item.AggregateRootId)
+							.Select(stream => stream.Aggregate(new ExpandoObject(), (aggregate, @event) => @event.Apply(aggregate)));
+
+					result = aggregates;
+				}
 			}
 
-			return events.Select(item => new
-			{
-				Type = item.Event.GetType().Name,
-				EventInfo = item
-			});
+			return result;
 		}
 
 		//[HttpGet("{id}")]

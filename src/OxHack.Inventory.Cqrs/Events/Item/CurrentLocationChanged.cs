@@ -28,5 +28,12 @@ namespace OxHack.Inventory.Cqrs.Events.Item
         {
             get;
         }
+
+        public dynamic Apply(dynamic aggregate)
+        {
+            aggregate.CurrentLocation = this.CurrentLocation;
+
+            return aggregate;
+        }
     }
 }

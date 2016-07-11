@@ -5,28 +5,35 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
-    public class QuantityChanged : IEvent, IConcurrencyAware
-    {
-        public QuantityChanged(Guid aggregateRootId, Guid concurrencyId, int quantity)
-        {
-            this.AggregateRootId = aggregateRootId;
-            this.ConcurrencyId = concurrencyId;
-            this.Quantity = quantity;
-        }
+	public class QuantityChanged : IEvent, IConcurrencyAware
+	{
+		public QuantityChanged(Guid aggregateRootId, Guid concurrencyId, int quantity)
+		{
+			this.AggregateRootId = aggregateRootId;
+			this.ConcurrencyId = concurrencyId;
+			this.Quantity = quantity;
+		}
 
-        public Guid AggregateRootId
-        {
-            get;
-        }
+		public Guid AggregateRootId
+		{
+			get;
+		}
 
-        public Guid ConcurrencyId
-        {
-            get;
-        }
+		public Guid ConcurrencyId
+		{
+			get;
+		}
 
-        public int Quantity
-        {
-            get;
-        }
-    }
+		public int Quantity
+		{
+			get;
+		}
+
+		public dynamic Apply(dynamic aggregate)
+		{
+			aggregate.Quantity = this.Quantity;
+
+			return aggregate;
+		}
+	}
 }

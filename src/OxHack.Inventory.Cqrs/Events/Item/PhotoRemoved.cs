@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
-    public class PhotoRemoved : IEvent
+    public class PhotoRemoved : IEvent, IConcurrencyAware
     {
-        public PhotoRemoved(Guid aggregateRootId, string photoFilename)
+        public PhotoRemoved(Guid aggregateRootId, Guid concurrencyId, string photoFilename)
         {
             this.AggregateRootId = aggregateRootId;
+            this.ConcurrencyId = concurrencyId;
             this.PhotoFilename = photoFilename;
         }
 
@@ -18,9 +19,22 @@ namespace OxHack.Inventory.Cqrs.Events.Item
             get;
         }
 
+        public Guid ConcurrencyId
+        {
+            get;
+        }
+
         public string PhotoFilename
         {
             get;
+        }
+
+        public dynamic Apply(dynamic aggregate)
+        {
+            List<string> photos = aggregate.Photos;
+            photos.Remove(this.PhotoFilename);
+
+            return aggregate;
         }
     }
 }
