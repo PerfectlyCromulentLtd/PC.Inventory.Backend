@@ -7,7 +7,7 @@ namespace OxHack.Inventory.Cqrs
 {
     public interface IConcurrencyAware
     {
-        Guid ConcurrencyId
+        int ConcurrencyId
         {
             get;
         }

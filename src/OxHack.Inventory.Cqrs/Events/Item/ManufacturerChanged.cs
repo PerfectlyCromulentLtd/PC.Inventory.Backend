@@ -7,7 +7,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 {
     public class ManufacturerChanged : IEvent, IConcurrencyAware
     {
-        public ManufacturerChanged(Guid aggregateRootId, Guid concurrencyId, string manufacturer)
+        public ManufacturerChanged(Guid aggregateRootId, int concurrencyId, string manufacturer)
         {
             this.AggregateRootId = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
@@ -19,7 +19,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
             get;
         }
 
-        public Guid ConcurrencyId
+        public int ConcurrencyId
         {
             get;
         }

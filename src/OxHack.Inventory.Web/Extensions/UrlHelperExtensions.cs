@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNet.Mvc.Routing;
+﻿using Microsoft.AspNetCore.Mvc.Routing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Web.Extensions
 {
-    public static class UrlHelperExtensions
+	public static class UrlHelperExtensions
     {
 		public static string Content(this UrlHelper urlHelper, string path, bool asAbsolute = false)
 		{

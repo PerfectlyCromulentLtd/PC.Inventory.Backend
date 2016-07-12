@@ -27,7 +27,8 @@ namespace OxHack.Inventory.Query.Handlers
 		IHandle<PhotoAdded>,
 		IHandle<PhotoRemoved>
 	{
-		private static string PlaceholderImage => "placeholder.jpg";
+		private static string PlaceholderImage
+			=> "placeholder.jpg";
 
 		private readonly IItemRepository itemRepository;
 		private readonly IPhotoRepository photoRepository;
@@ -58,7 +59,7 @@ namespace OxHack.Inventory.Query.Handlers
 						message.Quantity,
 						message.Spec,
 						null,
-						Guid.Empty);
+						message.ConcurrencyId);
 
 				await this.itemRepository.CreateItemAsync(model);
 				await this.photoRepository.AddPhotoToItemAsync(message.AggregateRootId, ItemQueryModelUpdater.PlaceholderImage);
@@ -130,7 +131,7 @@ namespace OxHack.Inventory.Query.Handlers
 				}
 			});
 
-		private async Task SaveMutation<TEvent>(ConcurrencyAwareEvent<TEvent> @event, Action<Item> mutation) where TEvent : IEvent
+		private async Task SaveMutation<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent, IConcurrencyAware
 		{
 			try
 			{

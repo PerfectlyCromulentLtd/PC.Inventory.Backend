@@ -3,13 +3,13 @@ using System;
 
 namespace OxHack.Inventory.Cqrs.Commands.Item
 {
-    public class ChangeNameCommand : ICommand, IConcurrencyAware, IMapToEvent<NameChanged>
+    public class RemovePhotoCommand : ICommand, IConcurrencyAware, IMapToEvent<PhotoRemoved>
     {
-        public ChangeNameCommand(Guid aggregateRootId, int concurrencyId, string name)
+        public RemovePhotoCommand(Guid aggregateRootId, int concurrencyId, string photo) 
         {
             this.AggregateRootId = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
-            this.Name = name;
+            this.Photo = photo;
         }
 
         public Guid AggregateRootId
@@ -22,14 +22,14 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             get;
         }
 
-        public string Name
+        public string Photo
         {
             get;
         }
 
-        public NameChanged GetEvent()
+        public PhotoRemoved GetEvent()
         {
-            return new NameChanged(this.AggregateRootId, this.ConcurrencyId, this.Name);
+            return new PhotoRemoved(this.AggregateRootId, this.ConcurrencyId, this.Photo);
         }
     }
 }

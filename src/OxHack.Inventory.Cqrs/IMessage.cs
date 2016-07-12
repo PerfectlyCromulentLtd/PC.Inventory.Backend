@@ -11,5 +11,5 @@ namespace OxHack.Inventory.Cqrs
         {
             get;
         }
-    }
+	}
 }

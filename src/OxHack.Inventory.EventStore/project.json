@@ -2,11 +2,8 @@
   "version": "1.0.0-*",
   "description": "OxHack.Inventory.EventStore Class Library",
   "authors": [ "yargh_000" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
   "frameworks": {
-    "dnx451": {
+    "net451": {
       "frameworkAssemblies": {
         "System.Configuration": "4.0.0.0",
         "System.Data": "4.0.0.0"
@@ -18,10 +15,10 @@
     }
   },
   "dependencies": {
-    "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
-    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
-    "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection": "1.0.0",
     "OxHack.Inventory.Cqrs": "1.0.0-*",
-    "Microsoft.Data.Sqlite": "1.0.0-rc1-final"
+    "Microsoft.Data.Sqlite": "1.0.0"
   }
 }

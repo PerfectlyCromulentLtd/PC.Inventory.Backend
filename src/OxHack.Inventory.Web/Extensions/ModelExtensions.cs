@@ -13,6 +13,11 @@ namespace OxHack.Inventory.Web.Extensions
     {
         public static WebModel ToWebModel(this QueryModel @this, string photoPath, EncryptionService encryptionService)
         {
+			if (@this == null)
+			{
+				return null;
+			}
+
             byte[] iv;
             var encryptedBytes = encryptionService.EncryptAscii(@this.ConcurrencyId.ToString(), out iv);
             var encryptedConcurrencyId = Convert.ToBase64String(encryptedBytes) + ";" + Convert.ToBase64String(iv);

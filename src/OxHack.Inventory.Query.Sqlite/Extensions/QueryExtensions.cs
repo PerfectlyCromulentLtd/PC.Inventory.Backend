@@ -1,10 +1,8 @@
-﻿using Microsoft.Data.Entity;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using OxHack.Inventory.Query.Sqlite.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Data.Entity.Query;
-using OxHack.Inventory.Query.Sqlite.Models;
 
 namespace OxHack.Inventory.Query.Sqlite.Extensions
 {

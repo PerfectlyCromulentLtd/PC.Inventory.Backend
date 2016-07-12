@@ -5,7 +5,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 {
     public class ChangeModelCommand : ICommand, IConcurrencyAware, IMapToEvent<ModelChanged>
     {
-        public ChangeModelCommand(Guid aggregateRootId, Guid concurrencyId, string model)
+        public ChangeModelCommand(Guid aggregateRootId, int concurrencyId, string model)
         {
             this.AggregateRootId = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
@@ -17,7 +17,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             get;
         }
 
-        public Guid ConcurrencyId
+        public int ConcurrencyId
         {
             get;
         }

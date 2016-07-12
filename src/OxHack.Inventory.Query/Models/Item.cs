@@ -7,41 +7,41 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Query.Models
 {
-	public class Item : IConcurrencyAware
-	{
-		public Item(
-			Guid id,
-			string additionalInformation,
-			string appearance,
-			string assignedLocation,
-			string category,
-			string currentLocation,
-			bool isLoan,
-			string manufacturer,
-			string model,
-			string name,
-			string origin,
-			int quantity,
-			string spec,
-			IEnumerable<string> photos,
-			Guid concurrencyId)
-		{
-			this.Id = id;
-			this.AdditionalInformation = additionalInformation;
-			this.Appearance = appearance;
-			this.AssignedLocation = assignedLocation;
-			this.Category = category;
-			this.CurrentLocation = currentLocation;
-			this.IsLoan = isLoan;
-			this.Manufacturer = manufacturer;
-			this.Model = model;
-			this.Name = name;
-			this.Origin = origin;
-			this.Quantity = quantity;
-			this.Spec = spec;
-			this.Photos = photos ?? Enumerable.Empty<string>();
-			this.ConcurrencyId = concurrencyId;
-		}
+    public class Item : IConcurrencyAware
+    {
+        public Item(
+            Guid id,
+            string additionalInformation,
+            string appearance,
+            string assignedLocation,
+            string category,
+            string currentLocation,
+            bool isLoan,
+            string manufacturer,
+            string model,
+            string name,
+            string origin,
+            int quantity,
+            string spec,
+            IEnumerable<string> photos,
+            int concurrencyId)
+        {
+            this.Id = id;
+            this.AdditionalInformation = additionalInformation;
+            this.Appearance = appearance;
+            this.AssignedLocation = assignedLocation;
+            this.Category = category;
+            this.CurrentLocation = currentLocation;
+            this.IsLoan = isLoan;
+            this.Manufacturer = manufacturer;
+            this.Model = model;
+            this.Name = name;
+            this.Origin = origin;
+            this.Quantity = quantity;
+            this.Spec = spec;
+            this.Photos = photos ?? Enumerable.Empty<string>();
+            this.ConcurrencyId = concurrencyId;
+        }
 
 		public Guid Id
 		{
@@ -124,11 +124,12 @@ namespace OxHack.Inventory.Query.Models
 		{
 			get;
 			internal set;
-		}
-		public Guid ConcurrencyId
-		{
-			get;
-			internal set;
-		}
-	}
+        }
+
+        public int ConcurrencyId
+        {
+            get;
+            internal set;
+        }
+    }
 }

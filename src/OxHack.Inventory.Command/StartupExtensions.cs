@@ -11,10 +11,12 @@ namespace OxHack.Inventory.Services
         {
             var provider = @this.BuildServiceProvider();
 
-            var bus = provider.GetService<IBus>();
-            var handler = new ItemCommandHandler(bus);
+            var eventStore = provider.GetService<IEventStore>();
+            var handler = new ItemCommandHandler(eventStore);
 
-            bus.RegisterCommandHandler<CreateItemCommand>(handler);
+			var bus = provider.GetService<IBus>();
+
+			bus.RegisterCommandHandler<CreateItemCommand>(handler);
             bus.RegisterCommandHandler<ChangeAdditionalInformationCommand>(handler);
             bus.RegisterCommandHandler<ChangeAppearanceCommand>(handler);
             bus.RegisterCommandHandler<ChangeAssignedLocationCommand>(handler);

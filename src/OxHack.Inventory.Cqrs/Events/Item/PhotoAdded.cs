@@ -7,7 +7,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 {
 	public class PhotoAdded : IEvent, IConcurrencyAware
 	{
-		public PhotoAdded(Guid aggregateRootId, Guid concurrencyId, string photoFilename)
+		public PhotoAdded(Guid aggregateRootId, int concurrencyId, string photoFilename)
 		{
 			this.AggregateRootId = aggregateRootId;
 			this.ConcurrencyId = concurrencyId;
@@ -19,7 +19,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			get;
 		}
 
-		public Guid ConcurrencyId
+		public int ConcurrencyId
 		{
 			get;
 		}

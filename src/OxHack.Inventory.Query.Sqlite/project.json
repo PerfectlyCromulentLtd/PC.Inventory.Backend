@@ -2,32 +2,29 @@
   "version": "1.0.0-*",
   "description": "OxHack.Inventory.Query.Sqlite Class Library",
   "authors": [ "yargh_000" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
 
   "frameworks": {
-    "dnx451": {
+    "net451": {
       "dependencies": {
-        "EntityFramework.Commands": "7.0.0-rc1-final",
-        "System.Collections": "4.0.11-rc1-final",
-        "System.Linq": "4.1.0-rc1-final",
-        "System.Runtime": "4.1.0-rc1-final"
+        "Microsoft.EntityFrameworkCore.Tools": "1.0.0-preview2-final",
+        "System.Collections": "4.0.11",
+        "System.Linq": "4.1.0",
+        "System.Runtime": "4.1.0"
       }
     }
   },
 
   "dependencies": {
-    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
-    "EntityFramework.SQLite": "7.0.0-rc1-final",
-    "EntityFramework.Sqlite.Design": "7.0.0-rc1-final",
-    "Microsoft.CSharp": "4.0.1-rc1-final",
+    "Microsoft.CSharp": "4.0.1",
+    "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0",
+    "Microsoft.EntityFrameworkCore.Sqlite.Design": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
+    "Microsoft.Extensions.Logging.Console": "1.0.0",
     "OxHack.Inventory.Query": "1.0.0-*",
-    "System.Threading": "4.0.11-rc1-final",
-    "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final"
+    "System.Threading": "4.0.11"
   },
 
   "commands": {
-    "ef": "EntityFramework.Commands"
+    "ef": "Microsoft.EntityFrameworkCore.Tools"
   }
 }

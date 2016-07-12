@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using OxHack.Inventory.Services;
-using OxHack.Inventory.Web.Models;
-using OxHack.Inventory.Web.Extensions;
-using Microsoft.Extensions.Configuration;
-using OxHack.Inventory.Web.Models.Commands.Item;
-using OxHack.Inventory.Web.Services;
-using System.Net;
-using OxHack.Inventory.Web.Models.Commands;
-using Newtonsoft.Json.Linq;
-using System.Collections.ObjectModel;
-using System.Security.Cryptography;
-using Microsoft.AspNet.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using OxHack.Inventory.Cqrs;
 using OxHack.Inventory.Cqrs.Events;
+using OxHack.Inventory.Cqrs.Events.Item;
+using OxHack.Inventory.Query.Repositories;
+using System;
+using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Web.Controllers
 {
@@ -27,8 +18,13 @@ namespace OxHack.Inventory.Web.Controllers
 	{
 		private readonly IEventStore eventStore;
 		private readonly IBus bus;
+		private readonly IItemRepository itemRepository;
 
-		public EventStoreController(IHostingEnvironment environment, IEventStore eventStore, IBus bus)
+		public EventStoreController(
+			IHostingEnvironment environment, 
+			IEventStore eventStore, 
+			IBus bus, 
+			IItemRepository itemRepository)
 		{
 			if (!environment.IsDevelopment())
 			{
@@ -37,14 +33,41 @@ namespace OxHack.Inventory.Web.Controllers
 
 			this.eventStore = eventStore;
 			this.bus = bus;
+			this.itemRepository = itemRepository;
+		}
+
+		[HttpGet("{aggregateId}")]
+		public async Task<dynamic> GetByAggregateId(Guid aggregateId, [FromQuery] bool replay = false)
+		{
+			var events = this.eventStore.GetEventsByAggregateId(aggregateId);
+
+			if (replay)
+			{
+				await this.ReplayEvents(events);
+			}
+
+			return events;
 		}
 
 		[HttpGet]
-		public async Task<dynamic> GetAll([FromQuery] bool replayToBus = false, [FromQuery] bool replayToMemory = false)
+		public async Task<dynamic> GetAll(
+			[FromQuery] bool replayToBus = false, 
+			[FromQuery] bool replayToMemory = false,
+			[FromQuery] bool buildEventsFromData = false)
 		{
 			var replay = replayToBus || replayToMemory;
 
-			var events = await Task.FromResult(this.eventStore.GetAllEvents());
+			if (replay && buildEventsFromData)
+			{
+				return this.BadRequest($"{nameof(replay)} and {nameof(buildEventsFromData)} flags are mutually exclusive.");
+			}
+
+			if (buildEventsFromData)
+			{
+				await this.BuildEventsFromData();
+			}
+
+			var events = this.eventStore.GetAllEvents();
 
 			dynamic result =
 				events.Select(item => new
@@ -53,37 +76,65 @@ namespace OxHack.Inventory.Web.Controllers
 					EventInfo = item
 				});
 
-			if (replay)
+			if (replayToBus)
 			{
-				var eventsToReplay = events.OrderBy(item => item.CommitStamp).Select(item => item.Event).ToList();
+				await this.ReplayEvents(events);
+			}
 
-				if (replayToBus)
-				{
-					var replayTasks = eventsToReplay.Select(@event => this.bus.ReplayEventAsync(@event)).ToList();
-					await Task.WhenAll(replayTasks);
-				}
+			if (replayToMemory)
+			{
+				var aggregates =
+					events
+						.Select(item => item.Event)
+						.GroupBy(item => item.AggregateRootId)
+						.Select(stream => stream.OrderBy(item => item.ConcurrencyId).Aggregate(new ExpandoObject(), (aggregate, @event) => @event.Apply(aggregate)));
 
-				if (replayToMemory)
-				{
-					var aggregates =
-						events
-							.Select(item => item.Event)
-							.GroupBy(item => item.AggregateRootId)
-							.Select(stream => stream.Aggregate(new ExpandoObject(), (aggregate, @event) => @event.Apply(aggregate)));
-
-					result = aggregates;
-				}
+				result = aggregates;
 			}
 
 			return result;
 		}
 
-		//[HttpGet("{id}")]
-		//public async Task<Item> GetById(Guid id)
-		//{
-		//    var model = await this.itemService.GetItemByIdAsync(id);
+		private async Task ReplayEvents(IEnumerable<StoredEvent> events)
+		{
+			var eventsToReplay = events.OrderBy(item => item.CommitStamp).Select(item => item.Event).ToList();
 
-		//    return model.ToWebModel(this.Host + this.config["PathTo:ItemPhotos"], this.encryptionService);
-		//}
+			foreach (var @event in eventsToReplay)
+			{
+				await this.bus.RaiseEventAsync(@event);
+			}
+		}
+
+		private async Task BuildEventsFromData()
+		{
+			var data = await this.itemRepository.GetAllItemsAsync();
+			var itemCreatedEvents =
+				data
+					.Select(item =>
+						new ItemCreated(
+							item.Id,
+							item.AdditionalInformation,
+							item.Appearance,
+							item.AssignedLocation,
+							item.Category,
+							item.CurrentLocation,
+							item.IsLoan,
+							item.Manufacturer,
+							item.Model,
+							item.Name,
+							item.Origin,
+							item.Quantity,
+							item.Spec))
+					.ToList();
+
+			var photoAddedEvents =
+				data
+					.SelectMany(item => item.Photos.Where(photo => photo != "placeholder.jpg").Select((photo, index) => 
+						new PhotoAdded(item.Id, index + 2, photo)))
+					.ToList();
+
+			itemCreatedEvents.ForEach(item => this.eventStore.StoreEvent(item));
+			photoAddedEvents.ForEach(item => this.eventStore.StoreEvent(item));
+		}
 	}
 }

@@ -9,7 +9,7 @@ namespace OxHack.Inventory.Query.Models
 {
 	public class Category : IConcurrencyAware
 	{
-		public Guid ConcurrencyId
+		public int ConcurrencyId
 		{
 			get
 			{

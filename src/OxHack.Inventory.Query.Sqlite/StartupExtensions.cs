@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNet.Hosting;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,18 +14,13 @@ namespace OxHack.Inventory.Query.Sqlite
     {
         public static void RegisterRepositories(this IServiceCollection @this, IConfigurationRoot configuration)
         {
-            @this
-                .AddEntityFramework()
-                .AddSqlite();
+			@this.AddEntityFramework();
 
 			var connectionString = configuration["Production:SqliteReadModelConnectionString"];
             DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder();
             optionsBuilder.UseSqlite(connectionString);
 
             @this.AddSingleton<DbContextOptions>(sp => optionsBuilder.Options);
-
-            SqliteWriteLock syncLock = new SqliteWriteLock();
-            @this.AddSingleton<SqliteWriteLock>(sp => syncLock);
 
             @this.AddTransient<IItemRepository, ItemRepository>();
 			@this.AddTransient<IPhotoRepository, PhotoRepository>();

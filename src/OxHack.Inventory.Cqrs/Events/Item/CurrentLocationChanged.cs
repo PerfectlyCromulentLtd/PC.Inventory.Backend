@@ -7,7 +7,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 {
     public class CurrentLocationChanged : IEvent, IConcurrencyAware
     {
-        public CurrentLocationChanged(Guid aggregateRootId, Guid concurrencyId, string currentLocation)
+        public CurrentLocationChanged(Guid aggregateRootId, int concurrencyId, string currentLocation)
         {
             this.AggregateRootId = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
@@ -19,7 +19,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
             get;
         }
 
-        public Guid ConcurrencyId
+        public int ConcurrencyId
         {
             get;
         }

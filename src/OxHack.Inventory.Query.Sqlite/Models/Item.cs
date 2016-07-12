@@ -23,7 +23,7 @@ namespace OxHack.Inventory.Query.Sqlite.Models
         public string Origin { get; set; }
         public long Quantity { get; set; }
         public string Spec { get; set; }
-        public string ConcurrencyId { get; set; }
+        public long ConcurrencyId { get; set; }
 
         public virtual ICollection<Photo> Photos { get; set; }
     }

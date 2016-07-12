@@ -10,7 +10,7 @@ namespace OxHack.Inventory.Cqrs.Events
 	{
 		private readonly TEvent baseEvent;
 
-		public ConcurrencyAwareEvent(TEvent @event, Guid concurrencyId)
+		public ConcurrencyAwareEvent(TEvent @event, int concurrencyId)
 		{
 			this.baseEvent = @event;
 			this.ConcurrencyId = concurrencyId;
@@ -19,7 +19,7 @@ namespace OxHack.Inventory.Cqrs.Events
 		public Guid AggregateRootId
 			=> this.baseEvent.AggregateRootId;
 
-		public Guid ConcurrencyId
+		public int ConcurrencyId
 		{
 			get;
 		}

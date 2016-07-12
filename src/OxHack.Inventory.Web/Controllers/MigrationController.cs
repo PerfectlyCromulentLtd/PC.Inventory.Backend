@@ -1,25 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using OxHack.Inventory.Cqrs;
+using OxHack.Inventory.Cqrs.Events;
+using OxHack.Inventory.Cqrs.Events.Item;
+using OxHack.Inventory.Query.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using OxHack.Inventory.Services;
-using OxHack.Inventory.Web.Models;
-using OxHack.Inventory.Web.Extensions;
-using Microsoft.Extensions.Configuration;
-using OxHack.Inventory.Web.Models.Commands.Item;
-using OxHack.Inventory.Web.Services;
-using System.Net;
-using OxHack.Inventory.Web.Models.Commands;
-using Newtonsoft.Json.Linq;
-using System.Collections.ObjectModel;
-using System.Security.Cryptography;
-using Microsoft.AspNet.Hosting;
-using OxHack.Inventory.Cqrs;
-using OxHack.Inventory.Cqrs.Events;
-using System.Dynamic;
-using OxHack.Inventory.Cqrs.Events.Item;
-using OxHack.Inventory.Query.Repositories;
 
 namespace OxHack.Inventory.Web.Controllers
 {
@@ -28,9 +16,9 @@ namespace OxHack.Inventory.Web.Controllers
 	public class MigrationController : Controller
 	{
 		private readonly IItemRepository itemRepository;
-		private readonly IBus bus;
+		private readonly IEventStore eventStore;
 
-		public MigrationController(IHostingEnvironment environment, IItemRepository itemRepository, IBus bus)
+		public MigrationController(IHostingEnvironment environment, IItemRepository itemRepository, IEventStore eventStore)
 		{
 			if (!environment.IsDevelopment())
 			{
@@ -38,11 +26,14 @@ namespace OxHack.Inventory.Web.Controllers
 			}
 
 			this.itemRepository = itemRepository;
-			this.bus = bus;
+			this.eventStore = eventStore;
 		}
 
 		[HttpGet]
-		public async Task<dynamic> GetAll([FromQuery] bool generateEventsFromQueryDb = false, [FromQuery] bool persistResults = false)
+		[Obsolete("Untested")]
+		public async Task<dynamic> DoStuff(
+			[FromQuery] bool generateEventsFromQueryDb = false,
+			[FromQuery] bool persistResults = false)
 		{
 			dynamic result = "Nothing";
 
@@ -69,30 +60,30 @@ namespace OxHack.Inventory.Web.Controllers
 								item.Spec))
 						.ToList();
 
-				List<PhotoAdded> photoAddedEvents = new List<PhotoAdded>();
+				List<PhotoAdded> photoAddedEvents =
+					items
+						.SelectMany(item =>
+							item.Photos.Select((photo, index) => new PhotoAdded(item.Id, index + 2, photo)))
+						.ToList();
+
+				var allEvents =
+					itemCreationEvents
+						.Cast<IEvent>()
+						.Concat(photoAddedEvents);
 
 				if (persistResults)
 				{
-					foreach (var creationEvent in itemCreationEvents)
+					foreach (var @event in result)
 					{
-						await this.bus.RaiseEventAsync(creationEvent);
-						var createdItem = this.itemRepository.GetItemByIdAsync(creationEvent.AggregateRootId);
-
-						var itemPhotoAddedEvents =
-							items
-								.
+						this.eventStore.StoreEvent(@event);
 					}
 				}
-				else
-				{
-					photoAddedEvents =
-						items
-							.SelectMany(item =>
-								item.Photos.Select(photo => new PhotoAdded(item.Id, Guid.NewGuid(), photo)))
-							.ToList();
-				}
 
-				result = itemCreationEvents.Cast<IEvent>().Concat(photoAddedEvents).Select(entry => new { Type = entry.GetType().Name, Body = entry });
+				result = allEvents.Select(entry => new
+				{
+					Type = entry.GetType().Name,
+					Body = entry
+				});
 			}
 
 			return result;

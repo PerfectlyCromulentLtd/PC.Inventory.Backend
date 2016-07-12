@@ -103,6 +103,9 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			get;
 		}
 
+		public int ConcurrencyId
+			=> 1;
+
 		public dynamic Apply(dynamic aggregate)
 		{
 			aggregate.AggregateRootId = AggregateRootId;

@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
 using OxHack.Inventory.Query.Repositories;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Query.Sqlite.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+	public class CategoryRepository : ICategoryRepository
 	{
 		private readonly DbContextOptions dbContextOptions;
 
