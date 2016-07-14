@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -85,7 +84,7 @@ namespace OxHack.Inventory.Web
 				.UseKestrel()
 				.UseUrls("http://+:5000")
 				.UseContentRoot(Directory.GetCurrentDirectory())
-				.UseIISIntegration()
+				//.UseIISIntegration()
 				.UseStartup<Startup>()
 				.Build();
 

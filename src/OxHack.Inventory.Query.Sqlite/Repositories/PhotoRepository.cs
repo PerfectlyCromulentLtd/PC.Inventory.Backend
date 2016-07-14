@@ -17,23 +17,16 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 
 		public async Task AddPhotoToItemAsync(Guid itemId, string photoFilename)
 		{
-			try
+			using (var dbContext = new InventoryDbContext(this.dbContextOptions))
 			{
-				using (var dbContext = new InventoryDbContext(this.dbContextOptions))
+				var newPhoto = new Models.Photo()
 				{
-					var newPhoto = new Models.Photo()
-					{
-						Filename = photoFilename,
-						ItemId = itemId.ToString()
-					};
+					Filename = photoFilename,
+					ItemId = itemId.ToString()
+				};
 
-					dbContext.Photos.Add(newPhoto);
-					await dbContext.SaveChangesAsync();
-				}
-			}
-			catch (Exception e)
-			{
-				throw;
+				dbContext.Photos.Add(newPhoto);
+				await dbContext.SaveChangesAsync();
 			}
 		}
 
