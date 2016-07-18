@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public OriginChanged GetEvent()
         {
-            return new OriginChanged(this.AggregateRootId, this.ConcurrencyId, this.Origin);
+            return new OriginChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.Origin);
         }
     }
 }

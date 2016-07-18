@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public AppearanceChanged GetEvent()
         {
-            return new AppearanceChanged(this.AggregateRootId, this.ConcurrencyId, this.Appearance);
+            return new AppearanceChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.Appearance);
         }
     }
 }

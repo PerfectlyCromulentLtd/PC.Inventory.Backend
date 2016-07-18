@@ -4,7 +4,6 @@ using OxHack.Inventory.Cqrs.Events.Item;
 using OxHack.Inventory.Query.Models;
 using OxHack.Inventory.Query.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,23 +42,9 @@ namespace OxHack.Inventory.Query.Handlers
 		{
 			try
 			{
-				var model =
-					new Item(
-						message.AggregateRootId,
-						message.AdditionalInformation,
-						message.Appearance,
-						message.AssignedLocation,
-						message.Category,
-						message.CurrentLocation,
-						message.IsLoan,
-						message.Manufacturer,
-						message.Model,
-						message.Name,
-						message.Origin,
-						message.Quantity,
-						message.Spec,
-						null,
-						message.ConcurrencyId);
+				var model = new MutableItem();
+
+				message.Apply(model);
 
 				await this.itemRepository.CreateItemAsync(model);
 				await this.photoRepository.AddPhotoToItemAsync(message.AggregateRootId, ItemQueryModelUpdater.PlaceholderImage);
@@ -72,72 +57,83 @@ namespace OxHack.Inventory.Query.Handlers
 		}
 
 		public async Task Handle(AdditionalInformationChanged message) =>
-			await this.SaveMutation(message, item => item.AdditionalInformation = message.AdditionalInformation);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(AppearanceChanged message) =>
-			await this.SaveMutation(message, item => item.Appearance = message.Appearance);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(AssignedLocationChanged message) =>
-			await this.SaveMutation(message, item => item.AssignedLocation = message.AssignedLocation);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(CategoryChanged message) =>
-			await this.SaveMutation(message, item => item.Category = message.Category);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(CurrentLocationChanged message) =>
-			await this.SaveMutation(message, item => item.CurrentLocation = message.CurrentLocation);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(IsLoanChanged message) =>
-			await this.SaveMutation(message, item => item.IsLoan = message.IsLoan);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(ManufacturerChanged message) =>
-			await this.SaveMutation(message, item => item.Manufacturer = message.Manufacturer);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(ModelChanged message) =>
-			await this.SaveMutation(message, item => item.Model = message.Model);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(NameChanged message) =>
-			await this.SaveMutation(message, item => item.Name = message.Name);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(OriginChanged message) =>
-			await this.SaveMutation(message, item => item.Origin = message.Origin);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(QuantityChanged message) =>
-			await this.SaveMutation(message, item => item.Quantity = message.Quantity);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(SpecChanged message) =>
-			await this.SaveMutation(message, item => item.Spec = message.Spec);
+			await this.PersistEventChanges(message, item => message.Apply(item));
 
 		public async Task Handle(PhotoAdded message) =>
-			await this.SaveMutation(message, item =>
+			await this.PersistEventChanges(message, item =>
 			{
-				var photos = item.Photos.ToList();
-				item.Photos = photos;
+				message.Apply(item);
 
-				photos.Add(message.PhotoFilename);
-				photos.RemoveAll(photo => photo == ItemQueryModelUpdater.PlaceholderImage);
-			});
+				this.photoRepository.AddPhotoToItemAsync(item.Id, message.PhotoFilename);
 
-		public async Task Handle(PhotoRemoved message) =>
-			await this.SaveMutation(message, item =>
-			{
-				var photos = item.Photos.ToList();
-				item.Photos = photos;
-
-				photos.Remove(message.PhotoFilename);
-
-				if (photos.Count == 0)
+				if (item.Photos.Contains(ItemQueryModelUpdater.PlaceholderImage))
 				{
-					photos.Add(ItemQueryModelUpdater.PlaceholderImage);
+					this.photoRepository.RemovePhotoFromItemAsync(item.Id, ItemQueryModelUpdater.PlaceholderImage);
+
+					var photos = item.Photos.ToList();
+					photos.RemoveAll(photo => photo == ItemQueryModelUpdater.PlaceholderImage);
+					item.Photos = photos;
 				}
 			});
 
-		private async Task SaveMutation<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent, IConcurrencyAware
+		public async Task Handle(PhotoRemoved message) =>
+			await this.PersistEventChanges(message, item =>
+			{
+				message.Apply(item);
+
+				this.photoRepository.RemovePhotoFromItemAsync(item.Id, message.PhotoFilename);
+
+				if (!item.Photos.Any())
+				{
+					this.photoRepository.AddPhotoToItemAsync(item.Id, ItemQueryModelUpdater.PlaceholderImage);
+
+					var photos = item.Photos.ToList();
+					photos.Add(ItemQueryModelUpdater.PlaceholderImage);
+					item.Photos = photos;
+				}
+			});
+
+		private async Task PersistEventChanges<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent
 		{
 			try
 			{
 				var item = await this.itemRepository.GetItemByIdAsync(@event.AggregateRootId);
 
 				mutation(item);
+
 				item.ConcurrencyId = @event.ConcurrencyId;
 
 				await this.itemRepository.UpdateItemAsync(item);

@@ -16,14 +16,13 @@ namespace OxHack.Inventory.Query.Sqlite
 			{
                 entity.Property(e => e.Id).IsRequired();
                 entity.Property(e => e.ConcurrencyId);
-                // disabled until EF7 supports offline concurrency token generation
-                // See https://github.com/aspnet/EntityFramework/issues/2195
-                //.ValueGeneratedOnAddOrUpdate()
-                //.IsConcurrencyToken();
                 entity.Property(e => e.Appearance).IsRequired();
 				entity.Property(e => e.AssignedLocation).IsRequired();
 				entity.Property(e => e.Category).IsRequired();
 				entity.Property(e => e.Name).IsRequired();
+				entity
+					.HasMany(item => item.Photos)
+					.WithOne(photo => photo.Item);
 			});
 
 			modelBuilder.Entity<Photo>(entity =>
@@ -33,7 +32,7 @@ namespace OxHack.Inventory.Query.Sqlite
 					.HasOne(photo => photo.Item)
 					.WithMany(item => item.Photos)
 					.HasForeignKey(photo => photo.ItemId)
-					.OnDelete(DeleteBehavior.Restrict);
+					.OnDelete(DeleteBehavior.Cascade);
 			});
 
 			//modelBuilder.Entity<Category>(entity =>

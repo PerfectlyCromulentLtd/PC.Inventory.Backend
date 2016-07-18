@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Query.Models
 {
-    public class Item : IConcurrencyAware
+    public abstract class Item : IConcurrencyAware
     {
-        public Item(
+		protected Item()
+		{
+		}
+
+        protected Item(
             Guid id,
             string additionalInformation,
             string appearance,
@@ -46,6 +50,7 @@ namespace OxHack.Inventory.Query.Models
 		public Guid Id
 		{
 			get;
+			internal set;
 		}
 
 		public string Name

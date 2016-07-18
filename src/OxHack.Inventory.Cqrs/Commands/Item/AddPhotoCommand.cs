@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public PhotoAdded GetEvent()
         {
-            return new PhotoAdded(this.AggregateRootId, this.ConcurrencyId, this.Photo);
+            return new PhotoAdded(this.AggregateRootId, this.ConcurrencyId + 1, this.Photo);
         }
     }
 }

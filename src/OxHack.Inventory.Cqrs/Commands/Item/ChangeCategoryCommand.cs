@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public CategoryChanged GetEvent()
         {
-            return new CategoryChanged(this.AggregateRootId, this.ConcurrencyId, this.Category);
+            return new CategoryChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.Category);
         }
     }
 }

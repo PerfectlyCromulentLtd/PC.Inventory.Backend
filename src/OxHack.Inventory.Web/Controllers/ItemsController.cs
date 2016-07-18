@@ -75,7 +75,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 			if (model != null)
 			{
-				return 
+				return
 					new ObjectResult(
 						model.ToWebModel(this.Host + this.config["PathTo:ItemPhotos"], this.encryptionService));
 			}
@@ -83,11 +83,10 @@ namespace OxHack.Inventory.Web.Controllers
 			{
 				return this.NotFound();
 			}
-
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Post([FromBody] CreateItemCommand command)
+		public async Task<IActionResult> CreateItem([FromBody] CreateItemCommand command)
 		{
 			IActionResult result;
 			if (!this.ValidateDomainModel(nameof(CreateItemCommand), out result))
@@ -124,11 +123,15 @@ namespace OxHack.Inventory.Web.Controllers
 
 			try
 			{
-				var forget = this.itemService.IssueCommandAsync(command.ToDomainCommand(this.encryptionService));
+				await this.itemService.IssueCommandAsync(command.ToDomainCommand(this.encryptionService));
 			}
 			catch (CryptographicException)
 			{
 				return this.BadRequest("Unable to decrypt ConcurrencyId.  This may be a sign your data is stale.");
+			}
+			catch (OptimisticConcurrencyException)
+			{
+				return new StatusCodeResult((int)HttpStatusCode.Conflict);
 			}
 
 			return new StatusCodeResult((int)HttpStatusCode.Accepted);
@@ -149,7 +152,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 			if (stillValid)
 			{
-				command = body.ToObject(commandType) as IConcurrencyAwareCommand;
+				command = body?.ToObject(commandType) as IConcurrencyAwareCommand;
 
 				if (command == null)
 				{
@@ -187,6 +190,7 @@ namespace OxHack.Inventory.Web.Controllers
 		{
 			bool stillValid = true;
 			errorResult = null;
+			commandType = null;
 
 			string typeName;
 			stillValid = this.ExtractDomainModelFromContentType(out typeName, out errorResult);
@@ -197,7 +201,10 @@ namespace OxHack.Inventory.Web.Controllers
 				errorResult = this.BadRequest("Content-Type 'domain-model' value does not match supported Domain Models.");
 			}
 
-			commandType = this.supportedDomainModelTypesByStringName[typeName];
+			if (stillValid)
+			{
+				commandType = this.supportedDomainModelTypesByStringName[typeName];
+			}
 
 			return stillValid;
 		}

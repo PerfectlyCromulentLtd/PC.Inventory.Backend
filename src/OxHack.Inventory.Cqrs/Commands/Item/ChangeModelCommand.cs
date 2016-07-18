@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public ModelChanged GetEvent()
         {
-            return new ModelChanged(this.AggregateRootId, this.ConcurrencyId, this.Model);
+            return new ModelChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.Model);
         }
     }
 }

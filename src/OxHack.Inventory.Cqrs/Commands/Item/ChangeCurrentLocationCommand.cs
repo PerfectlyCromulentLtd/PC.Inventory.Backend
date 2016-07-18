@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public CurrentLocationChanged GetEvent()
         {
-            return new CurrentLocationChanged(this.AggregateRootId, this.ConcurrencyId, this.CurrentLocation);
+            return new CurrentLocationChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.CurrentLocation);
         }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OxHack.Inventory.Cqrs;
 using OxHack.Inventory.Cqrs.Events;
 using OxHack.Inventory.Cqrs.Events.Item;
-using OxHack.Inventory.Query.Repositories;
+using OxHack.Inventory.Services;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -18,13 +18,13 @@ namespace OxHack.Inventory.Web.Controllers
 	{
 		private readonly IEventStore eventStore;
 		private readonly IBus bus;
-		private readonly IItemRepository itemRepository;
+		private readonly ItemService itemService;
 
 		public EventStoreController(
 			IHostingEnvironment environment, 
 			IEventStore eventStore, 
 			IBus bus, 
-			IItemRepository itemRepository)
+			ItemService itemService)
 		{
 			if (!environment.IsDevelopment())
 			{
@@ -33,7 +33,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 			this.eventStore = eventStore;
 			this.bus = bus;
-			this.itemRepository = itemRepository;
+			this.itemService = itemService;
 		}
 
 		[HttpGet("{aggregateId}")]
@@ -107,7 +107,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 		private async Task BuildEventsFromData()
 		{
-			var data = await this.itemRepository.GetAllItemsAsync();
+			var data = await this.itemService.GetAllItemsAsync();
 			var itemCreatedEvents =
 				data
 					.Select(item =>

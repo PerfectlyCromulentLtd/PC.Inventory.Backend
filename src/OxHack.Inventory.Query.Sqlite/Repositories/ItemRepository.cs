@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 						.IncludeAllMembers()
 						.ToListAsync();
 
-				var immutables = items.Select(item => item.ToImmutableModel());
+				var immutables = items.Select(item => item.ToDomainModel());
 
 				return immutables;
 			}
@@ -45,7 +45,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 						.IncludeAllMembers()
 						.SingleOrDefaultAsync(item => item.Id == id.ToString());
 
-				return result?.ToImmutableModel();
+				return result?.ToDomainModel();
 			}
 		}
 
@@ -60,7 +60,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 						.Where(item => item.Category.Trim() == category.Trim())
 						.ToListAsync();
 
-				var immutables = items.Select(item => item.ToImmutableModel());
+				var immutables = items.Select(item => item.ToDomainModel());
 
 				return immutables;
 			}
@@ -82,9 +82,7 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 			var dbModel = item.ToDbModel();
 			using (var dbContext = new InventoryDbContext(this.dbContextOptions))
 			{
-				dbContext.Items.Attach(dbModel);
-				dbContext.Entry(dbModel).State = EntityState.Modified;
-
+				dbContext.Items.Update(dbModel);
 				await dbContext.SaveChangesAsync();
 			}
 		}

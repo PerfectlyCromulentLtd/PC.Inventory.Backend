@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public IsLoanChanged GetEvent()
         {
-            return new IsLoanChanged(this.AggregateRootId, this.ConcurrencyId, this.IsLoan);
+            return new IsLoanChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.IsLoan);
         }
     }
 }

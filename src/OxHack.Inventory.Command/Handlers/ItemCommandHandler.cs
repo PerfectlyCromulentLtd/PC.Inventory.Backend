@@ -34,70 +34,70 @@ namespace OxHack.Inventory.Command.Handlers
 
         public async Task Handle(CreateItemCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeAdditionalInformationCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeAppearanceCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeAssignedLocationCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeCategoryCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeCurrentLocationCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeIsLoanCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeManufacturerCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeModelCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeNameCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeOriginCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeQuantityCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
         public async Task Handle(ChangeSpecCommand message)
         {
-            await this.PublishMappedEvent(message);
+            await this.StoreEvent(message);
         }
 
-        private async Task PublishMappedEvent<TEvent>(IMapToEvent<TEvent> source) where TEvent : IEvent
+        private async Task StoreEvent<TEvent>(IMapToEvent<TEvent> source) where TEvent : IEvent
         {
             var @event = source.GetEvent();
 			this.eventStore.StoreEvent(@event);
