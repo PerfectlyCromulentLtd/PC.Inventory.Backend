@@ -9,6 +9,42 @@ namespace OxHack.Inventory.Query.Models
 {
     public abstract class Item : IConcurrencyAware
     {
+		public static Item CreateNew(
+			Guid id,
+			string additionalInformation,
+			string appearance,
+			string assignedLocation,
+			string category,
+			string currentLocation,
+			bool isLoan,
+			string manufacturer,
+			string model,
+			string name,
+			string origin,
+			int quantity,
+			string spec,
+			IEnumerable<string> photos,
+			int concurrencyId)
+		{
+			return
+				new MutableItem(
+					  id,
+					  additionalInformation,
+					  appearance,
+					  assignedLocation,
+					  category,
+					  currentLocation,
+					  isLoan,
+					  manufacturer,
+					  model,
+					  name,
+					  origin,
+					  quantity,
+					  spec,
+					  photos,
+					  concurrencyId);
+		}
+
 		protected Item()
 		{
 		}

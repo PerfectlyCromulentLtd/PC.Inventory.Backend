@@ -9,7 +9,7 @@ namespace OxHack.Inventory.Query.Sqlite.Extensions
 	{
 		public static Query.Models.Item ToDomainModel(this Sqlite.Models.Item @this)
 		{
-			return new Query.Models.MutableItem(
+			return Query.Models.Item.CreateNew(
 				new Guid(@this.Id),
 				@this.AdditionalInformation,
 				@this.Appearance,

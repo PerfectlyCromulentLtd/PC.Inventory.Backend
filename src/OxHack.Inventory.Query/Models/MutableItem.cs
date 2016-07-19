@@ -13,7 +13,7 @@ namespace OxHack.Inventory.Query.Models
 		{
 		}
 
-		public MutableItem(
+		internal MutableItem(
 			Guid id, 
 			string additionalInformation, 
 			string appearance, 
