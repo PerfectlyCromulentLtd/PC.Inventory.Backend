@@ -22,8 +22,10 @@ namespace OxHack.Inventory.Web.Extensions
             var encryptedBytes = encryptionService.EncryptAscii(@this.ConcurrencyId.ToString(), out iv);
             var encryptedConcurrencyId = Convert.ToBase64String(encryptedBytes) + ";" + Convert.ToBase64String(iv);
 
+            // NOTE:  Encrypted concurrencyId is not meant to act as security.  It's a lazy deterrent
             return new WebModel(
                 @this.Id,
+                @this.ConcurrencyId,
                 @this.AdditionalInformation,
                 @this.Appearance,
                 @this.AssignedLocation,

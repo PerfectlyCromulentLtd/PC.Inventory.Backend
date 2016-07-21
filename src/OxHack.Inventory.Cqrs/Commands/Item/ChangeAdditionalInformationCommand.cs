@@ -7,12 +7,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 	{
 		public ChangeAdditionalInformationCommand(Guid aggregateRootId, int concurrencyId, string additionalInformation)
 		{
-			this.AggregateRootId = aggregateRootId;
+			this.Id = aggregateRootId;
 			this.ConcurrencyId = concurrencyId;
 			this.AdditionalInformation = additionalInformation;
 		}
 
-		public Guid AggregateRootId
+		public Guid Id
 		{
 			get;
 		}
@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
 		public AdditionalInformationChanged GetEvent()
 		{
-			return new AdditionalInformationChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.AdditionalInformation);
+			return new AdditionalInformationChanged(this.Id, this.ConcurrencyId + 1, this.AdditionalInformation);
 		}
 	}
 }

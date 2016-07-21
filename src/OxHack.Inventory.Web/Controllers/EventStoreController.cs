@@ -86,7 +86,7 @@ namespace OxHack.Inventory.Web.Controllers
 				var aggregates =
 					events
 						.Select(item => item.Event)
-						.GroupBy(item => item.AggregateRootId)
+						.GroupBy(item => item.Id)
 						.Select(stream => stream.OrderBy(item => item.ConcurrencyId).Aggregate(new ExpandoObject(), (aggregate, @event) => @event.Apply(aggregate)));
 
 				result = aggregates;

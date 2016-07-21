@@ -7,12 +7,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
     {
         public AddPhotoCommand(Guid aggregateRootId, int concurrencyId, string photo) 
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.Photo = photo;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }
@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public PhotoAdded GetEvent()
         {
-            return new PhotoAdded(this.AggregateRootId, this.ConcurrencyId + 1, this.Photo);
+            return new PhotoAdded(this.Id, this.ConcurrencyId + 1, this.Photo);
         }
     }
 }

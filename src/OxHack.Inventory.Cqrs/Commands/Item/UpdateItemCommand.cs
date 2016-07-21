@@ -1,13 +1,15 @@
 ﻿using OxHack.Inventory.Cqrs.Events.Item;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OxHack.Inventory.Cqrs.Commands.Item
 {
-    public class CreateItemCommand : ICommand, IMapToEvent<ItemCreated>
+    [Obsolete("Get rid of this class ASAP.  It was just created to help speed up development.  You should be sending updates through Deltas over PATCH.")]
+    public class UpdateItemCommand : ICommand, IConcurrencyAware, IMapToEvent<ItemUpdated>
     {
-        public CreateItemCommand(
-           Guid aggregateRootId,
+        public UpdateItemCommand(
+           Guid id,
            string additionalInformation,
            string appearance,
            string assignedLocation,
@@ -19,9 +21,11 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
            string name,
            string origin,
            int quantity,
-           string spec)
+           string spec,
+           List<string> photos,
+		   int concurrencyId)
         {
-            this.Id = aggregateRootId;
+            this.Id = id;
             this.AdditionalInformation = additionalInformation;
             this.Appearance = appearance;
             this.AssignedLocation = assignedLocation;
@@ -34,6 +38,8 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             this.Origin = origin;
             this.Quantity = quantity;
             this.Spec = spec;
+            this.Photos = photos;
+			this.ConcurrencyId = concurrencyId;
         }
 
         public Guid Id
@@ -101,9 +107,19 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             get;
         }
 
-        public ItemCreated GetEvent()
+        public List<string> Photos
         {
-            return new ItemCreated(
+            get;
+        }
+
+        public int ConcurrencyId
+        {
+            get;
+        }
+
+        public ItemUpdated GetEvent()
+        {
+            return new ItemUpdated(
                 this.Id,
                 this.AdditionalInformation,
                 this.Appearance,
@@ -116,7 +132,9 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
                 this.Name,
                 this.Origin,
                 this.Quantity,
-                this.Spec);
+                this.Spec,
+                this.Photos,
+                this.ConcurrencyId + 1);
         }
     }
 }

@@ -9,12 +9,12 @@ namespace OxHack.Inventory.Cqrs.Events.Item
     {
         public AdditionalInformationChanged(Guid aggregateRootId, int concurrencyId, string additionalInformation)
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.AdditionalInformation = additionalInformation;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }

@@ -7,12 +7,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
     {
         public ChangeOriginCommand(Guid aggregateRootId, int concurrencyId, string origin)
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.Origin = origin;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }
@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public OriginChanged GetEvent()
         {
-            return new OriginChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.Origin);
+            return new OriginChanged(this.Id, this.ConcurrencyId + 1, this.Origin);
         }
     }
 }

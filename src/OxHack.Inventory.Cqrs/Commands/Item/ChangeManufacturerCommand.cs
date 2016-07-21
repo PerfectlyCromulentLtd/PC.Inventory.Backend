@@ -7,12 +7,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
     {
         public ChangeManufacturerCommand(Guid aggregateRootId, int concurrencyId, string manufacturer)
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.Manufacturer = manufacturer;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }
@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public ManufacturerChanged GetEvent()
         {
-            return new ManufacturerChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.Manufacturer);
+            return new ManufacturerChanged(this.Id, this.ConcurrencyId + 1, this.Manufacturer);
         }
     }
 }

@@ -7,12 +7,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
     {
         public ChangeCurrentLocationCommand(Guid aggregateRootId, int concurrencyId, string currentLocation)
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.CurrentLocation = currentLocation;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }
@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public CurrentLocationChanged GetEvent()
         {
-            return new CurrentLocationChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.CurrentLocation);
+            return new CurrentLocationChanged(this.Id, this.ConcurrencyId + 1, this.CurrentLocation);
         }
     }
 }

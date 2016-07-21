@@ -10,9 +10,9 @@ namespace OxHack.Inventory.Web.Models.Commands.Item
         public Guid Id
         {
             get;
-
             set;
         }
+
         public string ConcurrencyId
         {
             get;

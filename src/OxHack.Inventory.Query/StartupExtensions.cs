@@ -31,6 +31,7 @@ namespace OxHack.Inventory.Query
             bus.RegisterEventHandler<SpecChanged>(handler);
 			bus.RegisterEventHandler<PhotoAdded>(handler);
 			bus.RegisterEventHandler<PhotoRemoved>(handler);
-		}
+            bus.RegisterEventHandler<ItemUpdated>(handler);
+        }
     }
 }

@@ -7,12 +7,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
     {
         public ChangeAssignedLocationCommand(Guid aggregateRootId, int concurrencyId, string assignedLocation)
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.AssignedLocation = assignedLocation;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }
@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public AssignedLocationChanged GetEvent()
         {
-            return new AssignedLocationChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.AssignedLocation);
+            return new AssignedLocationChanged(this.Id, this.ConcurrencyId + 1, this.AssignedLocation);
         }
     }
 }

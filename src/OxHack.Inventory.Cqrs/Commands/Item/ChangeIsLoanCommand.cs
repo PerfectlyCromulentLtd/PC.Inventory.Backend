@@ -7,12 +7,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
     {
         public ChangeIsLoanCommand(Guid aggregateRootId, int concurrencyId, bool isLoan)
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.IsLoan = isLoan;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }
@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public IsLoanChanged GetEvent()
         {
-            return new IsLoanChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.IsLoan);
+            return new IsLoanChanged(this.Id, this.ConcurrencyId + 1, this.IsLoan);
         }
     }
 }

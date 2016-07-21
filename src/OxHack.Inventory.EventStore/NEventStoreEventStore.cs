@@ -24,7 +24,7 @@ namespace OxHack.Inventory.EventStore
 		{
 			try
 			{
-				using (var stream = this.eventStore.OpenStream(message.AggregateRootId, message.ConcurrencyId - 1))
+				using (var stream = this.eventStore.OpenStream(message.Id, message.ConcurrencyId - 1))
 				{
 					stream.Add(new EventMessage { Body = message });
 					stream.CommitChanges(new Guid(message.ConcurrencyId, 0, 0, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }));

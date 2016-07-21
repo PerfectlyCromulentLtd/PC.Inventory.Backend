@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
-	public class ItemCreated : IEvent
+	[Obsolete("Get rid of this class ASAP.  It was just created to help speed up development.  You should be sending updates through Deltas over PATCH.")]
+	public class ItemUpdated : IEvent
 	{
-		public ItemCreated(
+		public ItemUpdated(
 			   Guid aggregateRootId,
 			   string additionalInformation,
 			   string appearance,
@@ -20,7 +21,9 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			   string name,
 			   string origin,
 			   int quantity,
-			   string spec
+			   string spec,
+			   List<string> photos,
+			   int concurrencyId
 			   )
 		{
 			this.Id = aggregateRootId;
@@ -36,6 +39,8 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			this.Origin = origin;
 			this.Quantity = quantity;
 			this.Spec = spec;
+			this.Photos = photos;
+			this.ConcurrencyId = concurrencyId;
 		}
 
 		public Guid Id
@@ -103,8 +108,15 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			get;
 		}
 
+		public List<string> Photos
+		{
+			get;
+		}
+
 		public int ConcurrencyId
-			=> 1;
+		{
+			get;
+		}
 
 		public dynamic Apply(dynamic aggregate)
 		{
@@ -121,7 +133,8 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			aggregate.Origin = this.Origin;
 			aggregate.Quantity = this.Quantity;
 			aggregate.Spec = this.Spec;
-			aggregate.Photos = new List<string>();
+			aggregate.Photos = this.Photos.ToList();
+			aggregate.ConcurrencyId = this.ConcurrencyId;
 
 			return aggregate;
 		}

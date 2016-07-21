@@ -46,8 +46,11 @@ namespace OxHack.Inventory.Web.Controllers
 			supportedDomainModelTypesByStringName.Add(nameof(ChangeOriginCommand), typeof(ChangeOriginCommand));
 			supportedDomainModelTypesByStringName.Add(nameof(ChangeQuantityCommand), typeof(ChangeQuantityCommand));
 			supportedDomainModelTypesByStringName.Add(nameof(ChangeSpecCommand), typeof(ChangeSpecCommand));
+            
+            // TODO: Remove this command altogether
+            supportedDomainModelTypesByStringName.Add(nameof(UpdateItemCommand), typeof(UpdateItemCommand));
 
-			this.supportedDomainModelTypesByStringName = new ReadOnlyDictionary<string, Type>(supportedDomainModelTypesByStringName);
+            this.supportedDomainModelTypesByStringName = new ReadOnlyDictionary<string, Type>(supportedDomainModelTypesByStringName);
 		}
 
 		[HttpGet]
@@ -118,7 +121,7 @@ namespace OxHack.Inventory.Web.Controllers
 			ICommand command;
 			if (!this.ValidatePut(id, body, out command, out result))
 			{
-				return await Task.FromResult(result);
+				return result;
 			}
 
 			try
@@ -218,7 +221,7 @@ namespace OxHack.Inventory.Web.Controllers
 			var domainModelTokens =
 				this.HttpContext.Request.ContentType?
 					.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-						.FirstOrDefault(item => item.ToLowerInvariant().StartsWith("domain-model="))
+						.FirstOrDefault(item => item.Trim().ToLowerInvariant().StartsWith("domain-model="))
 						?.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 
 			if (domainModelTokens == null || domainModelTokens.Length != 2)

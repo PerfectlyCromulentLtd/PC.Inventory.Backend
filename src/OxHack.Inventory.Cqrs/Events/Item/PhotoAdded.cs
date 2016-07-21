@@ -9,12 +9,12 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 	{
 		public PhotoAdded(Guid aggregateRootId, int concurrencyId, string photoFilename)
 		{
-			this.AggregateRootId = aggregateRootId;
+			this.Id = aggregateRootId;
 			this.ConcurrencyId = concurrencyId;
 			this.PhotoFilename = photoFilename;
 		}
 
-		public Guid AggregateRootId
+		public Guid Id
 		{
 			get;
 		}

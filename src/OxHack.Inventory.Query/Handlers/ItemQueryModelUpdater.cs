@@ -24,7 +24,8 @@ namespace OxHack.Inventory.Query.Handlers
 		IHandle<QuantityChanged>,
 		IHandle<SpecChanged>,
 		IHandle<PhotoAdded>,
-		IHandle<PhotoRemoved>
+		IHandle<PhotoRemoved>,
+        IHandle<ItemUpdated>
 	{
 		private static string PlaceholderImage
 			=> "placeholder.jpg";
@@ -47,7 +48,7 @@ namespace OxHack.Inventory.Query.Handlers
 				message.Apply(model);
 
 				await this.itemRepository.CreateItemAsync(model);
-				await this.photoRepository.AddPhotoToItemAsync(message.AggregateRootId, ItemQueryModelUpdater.PlaceholderImage);
+				await this.photoRepository.AddPhotoToItemAsync(message.Id, ItemQueryModelUpdater.PlaceholderImage);
 			}
 			catch
 			{
@@ -126,11 +127,14 @@ namespace OxHack.Inventory.Query.Handlers
 				}
 			});
 
-		private async Task PersistEventChanges<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent
+        public async Task Handle(ItemUpdated message) =>
+            await this.PersistEventChanges(message, item => message.Apply(item));
+
+        private async Task PersistEventChanges<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent
 		{
 			try
 			{
-				var item = await this.itemRepository.GetItemByIdAsync(@event.AggregateRootId);
+				var item = await this.itemRepository.GetItemByIdAsync(@event.Id);
 
 				mutation(item);
 
@@ -144,5 +148,5 @@ namespace OxHack.Inventory.Query.Handlers
 				throw;
 			}
 		}
-	}
+    }
 }

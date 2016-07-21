@@ -3,9 +3,6 @@ using OxHack.Inventory.Cqrs.Commands;
 using OxHack.Inventory.Cqrs.Commands.Item;
 using OxHack.Inventory.Cqrs.Events;
 using OxHack.Inventory.Cqrs.Events.Item;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Command.Handlers
@@ -23,7 +20,8 @@ namespace OxHack.Inventory.Command.Handlers
         IHandle<ChangeNameCommand>,
         IHandle<ChangeOriginCommand>,
         IHandle<ChangeQuantityCommand>,
-        IHandle<ChangeSpecCommand>
+        IHandle<ChangeSpecCommand>,
+        IHandle<UpdateItemCommand>
     {
         private readonly IEventStore eventStore;
 
@@ -93,6 +91,11 @@ namespace OxHack.Inventory.Command.Handlers
         }
 
         public async Task Handle(ChangeSpecCommand message)
+        {
+            await this.StoreEvent(message);
+        }
+
+        public async Task Handle(UpdateItemCommand message)
         {
             await this.StoreEvent(message);
         }

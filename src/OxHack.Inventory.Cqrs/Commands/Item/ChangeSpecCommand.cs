@@ -7,12 +7,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
     {
         public ChangeSpecCommand(Guid aggregateRootId, int concurrencyId, string spec) 
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.Spec = spec;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }
@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public SpecChanged GetEvent()
         {
-            return new SpecChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.Spec);
+            return new SpecChanged(this.Id, this.ConcurrencyId + 1, this.Spec);
         }
     }
 }

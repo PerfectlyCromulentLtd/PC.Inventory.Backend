@@ -9,12 +9,12 @@ namespace OxHack.Inventory.Cqrs.Events.Item
     {
         public IsLoanChanged(Guid aggregateRootId, int concurrencyId, bool isLoan)
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.IsLoan = isLoan;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }

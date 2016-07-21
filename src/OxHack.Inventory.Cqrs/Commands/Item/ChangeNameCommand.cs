@@ -7,12 +7,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
     {
         public ChangeNameCommand(Guid aggregateRootId, int concurrencyId, string name)
         {
-            this.AggregateRootId = aggregateRootId;
+            this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.Name = name;
         }
 
-        public Guid AggregateRootId
+        public Guid Id
         {
             get;
         }
@@ -29,7 +29,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 
         public NameChanged GetEvent()
         {
-            return new NameChanged(this.AggregateRootId, this.ConcurrencyId + 1, this.Name);
+            return new NameChanged(this.Id, this.ConcurrencyId + 1, this.Name);
         }
     }
 }

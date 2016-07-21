@@ -29,6 +29,7 @@ namespace OxHack.Inventory.Services
             bus.RegisterCommandHandler<ChangeOriginCommand>(handler);
             bus.RegisterCommandHandler<ChangeQuantityCommand>(handler);
             bus.RegisterCommandHandler<ChangeSpecCommand>(handler);
+            bus.RegisterCommandHandler<UpdateItemCommand>(handler);
         }
     }
 }
