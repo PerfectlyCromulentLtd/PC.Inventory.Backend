@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using OxHack.Inventory.Cqrs.Exceptions;
@@ -25,12 +26,14 @@ namespace OxHack.Inventory.Web.Controllers
 		private readonly ItemService itemService;
 		private readonly IConfiguration config;
 		private readonly ReadOnlyDictionary<string, Type> supportedDomainModelTypesByStringName;
+        private readonly IHostingEnvironment hostingEnvironment;
 
-		public ItemsController(ItemService itemService, EncryptionService encryptionService, IConfiguration config)
+        public ItemsController(ItemService itemService, EncryptionService encryptionService, IConfiguration config, IHostingEnvironment hostingEnvironment)
 		{
 			this.itemService = itemService;
 			this.encryptionService = encryptionService;
 			this.config = config;
+            this.hostingEnvironment = hostingEnvironment;
 
 			var supportedDomainModelTypesByStringName = new Dictionary<string, Type>();
 			supportedDomainModelTypesByStringName.Add(nameof(CreateItemCommand), typeof(CreateItemCommand));
@@ -68,7 +71,7 @@ namespace OxHack.Inventory.Web.Controllers
 				models = await this.itemService.GetAllItemsAsync();
 			}
 
-			return models.Select(item => item.ToWebModel(this.Host + this.config["PathTo:ItemPhotos"], this.encryptionService)).ToList();
+			return models.Select(item => item.ToWebModel(this.Host + this.config[this.hostingEnvironment.EnvironmentName + ":ItemPhotos"], this.encryptionService)).ToList();
 		}
 
 		[HttpGet("{id}")]
@@ -80,7 +83,7 @@ namespace OxHack.Inventory.Web.Controllers
 			{
 				return
 					new ObjectResult(
-						model.ToWebModel(this.Host + this.config["PathTo:ItemPhotos"], this.encryptionService));
+						model.ToWebModel(this.Host + this.config[this.hostingEnvironment.EnvironmentName + ":ItemPhotos"], this.encryptionService));
 			}
 			else
 			{

@@ -12,11 +12,11 @@ namespace OxHack.Inventory.Query.Sqlite
 {
 	public static class StartupExtensions
     {
-        public static void RegisterRepositories(this IServiceCollection @this, IConfigurationRoot configuration)
+        public static void RegisterRepositories(this IServiceCollection @this, IConfigurationRoot configuration, IHostingEnvironment hostingEnvironment)
         {
 			@this.AddEntityFramework();
 
-			var connectionString = configuration["Production:SqliteReadModelConnectionString"];
+			var connectionString = configuration[hostingEnvironment.EnvironmentName + ":SqliteReadModelConnectionString"];
             DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder();
             optionsBuilder.UseSqlite(connectionString);
 

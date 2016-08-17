@@ -6,16 +6,17 @@ using NEventStore.Persistence.Sql.SqlDialects;
 using System.Linq;
 using OxHack.Inventory.Cqrs;
 using System;
+using Microsoft.AspNetCore.Hosting;
 
 namespace OxHack.Inventory.EventStore
 {
 	public static class StartupExtensions
 	{
 		[Obsolete("Uses NEventStore's (apparently) deprecated Dispatcher Model.  Will need to change.")]
-		public static void AddEventStore(this IServiceCollection @this, IConfigurationRoot configuration)
+		public static void AddEventStore(this IServiceCollection @this, IConfigurationRoot configuration, IHostingEnvironment hostingEnvironment)
 		{
             var providerName = "Microsoft.Data.SQLite";
-            var connectionString = configuration["Production:SqliteEventStoreConnectionString"];
+            var connectionString = configuration[hostingEnvironment.EnvironmentName + ":SqliteEventStoreConnectionString"];
 
             var configFactory = new HackConfigurationConnectionFactory(providerName, connectionString);
 

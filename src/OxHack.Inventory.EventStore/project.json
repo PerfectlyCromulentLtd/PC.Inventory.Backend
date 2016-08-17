@@ -19,6 +19,7 @@
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "Microsoft.Extensions.DependencyInjection": "1.0.0",
     "OxHack.Inventory.Cqrs": "1.0.0-*",
-    "Microsoft.Data.Sqlite": "1.0.0"
+    "Microsoft.Data.Sqlite": "1.0.0",
+    "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0"
   }
 }

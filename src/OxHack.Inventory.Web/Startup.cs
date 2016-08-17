@@ -15,8 +15,12 @@ namespace OxHack.Inventory.Web
 {
 	public class Startup
 	{
-		public Startup(IHostingEnvironment env)
+        private readonly IHostingEnvironment hostingEnvironment;
+
+        public Startup(IHostingEnvironment env)
 		{
+            this.hostingEnvironment = env;
+
 			// Set up configuration sources.
 			var builder = new ConfigurationBuilder()
 				.SetBasePath(Directory.GetCurrentDirectory())
@@ -42,11 +46,11 @@ namespace OxHack.Inventory.Web
 			var bus = new InMemoryBus();
 			services.AddSingleton<IBus, InMemoryBus>(sp => bus);
 
-			services.RegisterRepositories(this.Configuration);
+			services.RegisterRepositories(this.Configuration, this.hostingEnvironment);
 			services.AddDomainServices();
 
 			services.RegisterQueryModelEventHandlers();
-			services.AddEventStore(this.Configuration);
+			services.AddEventStore(this.Configuration, this.hostingEnvironment);
 			services.RegisterCommandHandlers();
 		}
 
@@ -84,8 +88,8 @@ namespace OxHack.Inventory.Web
 				.UseKestrel()
 				.UseUrls("http://+:5000")
 				.UseContentRoot(Directory.GetCurrentDirectory())
-				//.UseIISIntegration()
-				.UseStartup<Startup>()
+                .UseIISIntegration()
+                .UseStartup<Startup>()
 				.Build();
 
 			host.Run();
