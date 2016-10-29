@@ -5,16 +5,16 @@
   "frameworks": {
     "net451": {
       "dependencies": {
-        "System.Linq": "4.1.0",
-        "System.Runtime": "4.1.0"
+        "System.Linq": "4.0.0",
+        "System.Runtime": "4.0.10"
       }
     }
   },
   "dependencies": {
-    "Microsoft.CSharp": "4.0.1",
+    "Microsoft.CSharp": "4.0.0",
     "Microsoft.Extensions.DependencyInjection": "1.0.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "OxHack.Inventory.Cqrs": "1.0.0-*",
-    "System.Threading": "4.0.11"
+    "System.Threading": "4.0.0"
   }
 }

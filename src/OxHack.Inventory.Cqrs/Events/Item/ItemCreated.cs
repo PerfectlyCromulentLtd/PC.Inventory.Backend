@@ -109,6 +109,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 		public dynamic Apply(dynamic aggregate)
 		{
 			aggregate.AggregateRootId = this.Id;
+			aggregate.ConcurrencyId = this.ConcurrencyId;
 			aggregate.AdditionalInformation = this.AdditionalInformation;
 			aggregate.Appearance = this.Appearance;
 			aggregate.AssignedLocation = this.AssignedLocation;

@@ -88,8 +88,8 @@ namespace OxHack.Inventory.Web
 				.UseKestrel()
 				.UseUrls("http://+:5000")
 				.UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
-                .UseStartup<Startup>()
+				.UseIISIntegration()
+				.UseStartup<Startup>()
 				.Build();
 
 			host.Run();

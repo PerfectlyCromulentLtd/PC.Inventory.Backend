@@ -16,9 +16,12 @@
       }
     },
     "web": {
+      "commandName": "Project"
+    },
+    "Local Debug": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Debug"
+        "ASPNETCORE_ENVIRONMENT": "Local Debug"
       }
     }
   }
