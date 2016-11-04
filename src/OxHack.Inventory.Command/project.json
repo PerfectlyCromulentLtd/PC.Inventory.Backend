@@ -1,12 +1,18 @@
 {
-  "version": "1.0.0-*",
-  "description": "OxHack.Inventory.Command Class Library",
-  "authors": [ "yargh_000" ],
   "frameworks": {
-    "net451": {
+    "netcoreapp1.1": {
+      "imports": [
+        "dotnet5.6",
+        "portable-net45+win8"
+      ],
       "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.1.0-preview1-001100-00",
+          "type": "platform"
+        }
       }
-    }
+    },
+    "net46": {}
   },
   "dependencies": {
     "Microsoft.Extensions.DependencyInjection": "1.0.0",

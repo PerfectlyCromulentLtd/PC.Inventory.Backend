@@ -1,10 +1,18 @@
 {
-  "version": "1.0.0-*",
-  "description": "OxHack.Inventory.Query.Sqlite Class Library",
-  "authors": [ "yargh_000" ],
-
   "frameworks": {
-    "net451": {
+    "netcoreapp1.1": {
+      "imports": [
+        "dotnet5.6",
+        "portable-net45+win8"
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.1.0-preview1-001100-00",
+          "type": "platform"
+        }
+      }
+    },
+    "net46": {
       "dependencies": {
         "System.Collections": "4.0.0",
         "System.Linq": "4.0.0",
