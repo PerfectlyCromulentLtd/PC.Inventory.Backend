@@ -37,24 +37,38 @@ namespace OxHack.Inventory.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<Uri> UploadPhoto(Guid itemId, [FromQuery] string concurrencyId)
-		{
-			var photoData = new byte[(int)this.Request.ContentLength];
-			this.Request.Body.Read(photoData, 0, (int)this.Request.ContentLength);
+		public async Task<Uri> UploadPhoto(Guid itemId, [FromHeader] string concurrencyId)
+        {
+            var photoData = new byte[(int)this.Request.ContentLength];
+            this.Request.Body.Read(photoData, 0, (int)this.Request.ContentLength);
 
-			var folder = Path.Combine(this.hostingEnvironment.WebRootPath, this.PathToPhotos.Trim('/'));
+            var folder = Path.Combine(this.hostingEnvironment.WebRootPath, this.PathToPhotos.Trim('/'));
 
-            int decryptedConcurrencyId = concurrencyId.AsDecryptedConcurrencyId(this.encryptionService);
+            int decryptedConcurrencyId = this.GetDecryptedConcurrencyId(concurrencyId);
 
             var command = new AddPhotoCommand(itemId, decryptedConcurrencyId, photoData, folder);
             await this.itemService.IssueCommandAsync(command);
 
             var result = new Uri(this.Host + this.PathToPhotos + command.FileName);
 
-			return result;
-		}
+            return result;
+        }
 
-		private string Host
+        [HttpDelete("{photo}")]
+        public async Task UnlinkPhoto(Guid itemId, string photo, [FromHeader] string concurrencyId)
+        {
+            int decryptedConcurrencyId = this.GetDecryptedConcurrencyId(concurrencyId);
+            var command = new RemovePhotoCommand(itemId, decryptedConcurrencyId, photo);
+
+            await this.itemService.IssueCommandAsync(command);
+        }
+
+        private int GetDecryptedConcurrencyId(string concurrencyId)
+        {
+            return concurrencyId.AsDecryptedConcurrencyId(this.encryptionService);
+        }
+
+        private string Host
 			=> this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
 
 		private string PathToPhotos
