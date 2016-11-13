@@ -7,9 +7,9 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 {
     public class CurrentLocationChanged : IEvent
     {
-        public CurrentLocationChanged(Guid aggregateRootId, int concurrencyId, string currentLocation)
+        public CurrentLocationChanged(Guid id, int concurrencyId, string currentLocation)
         {
-            this.Id = aggregateRootId;
+            this.Id = id;
             this.ConcurrencyId = concurrencyId;
             this.CurrentLocation = currentLocation;
         }

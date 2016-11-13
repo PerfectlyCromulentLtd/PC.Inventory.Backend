@@ -7,9 +7,9 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 {
     public class IsLoanChanged : IEvent
     {
-        public IsLoanChanged(Guid aggregateRootId, int concurrencyId, bool isLoan)
+        public IsLoanChanged(Guid id, int concurrencyId, bool isLoan)
         {
-            this.Id = aggregateRootId;
+            this.Id = id;
             this.ConcurrencyId = concurrencyId;
             this.IsLoan = isLoan;
         }

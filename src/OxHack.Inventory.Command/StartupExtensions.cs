@@ -2,6 +2,7 @@
 using OxHack.Inventory.Command.Handlers;
 using OxHack.Inventory.Cqrs;
 using OxHack.Inventory.Cqrs.Commands.Item;
+using OxHack.Inventory.Query.Repositories;
 
 namespace OxHack.Inventory.Services
 {
@@ -12,24 +13,30 @@ namespace OxHack.Inventory.Services
             var provider = @this.BuildServiceProvider();
 
             var eventStore = provider.GetService<IEventStore>();
-            var handler = new ItemCommandHandler(eventStore);
+            var photoRepo = provider.GetService<IPhotoRepository>();
+
+            var itemHandler = new ItemCommandHandler(eventStore);
+            var photoHandler = new PhotoCommandHandler(eventStore, photoRepo);
 
 			var bus = provider.GetService<IBus>();
 
-			bus.RegisterCommandHandler<CreateItemCommand>(handler);
-            bus.RegisterCommandHandler<ChangeAdditionalInformationCommand>(handler);
-            bus.RegisterCommandHandler<ChangeAppearanceCommand>(handler);
-            bus.RegisterCommandHandler<ChangeAssignedLocationCommand>(handler);
-            bus.RegisterCommandHandler<ChangeCategoryCommand>(handler);
-            bus.RegisterCommandHandler<ChangeCurrentLocationCommand>(handler);
-            bus.RegisterCommandHandler<ChangeIsLoanCommand>(handler);
-            bus.RegisterCommandHandler<ChangeManufacturerCommand>(handler);
-            bus.RegisterCommandHandler<ChangeModelCommand>(handler);
-            bus.RegisterCommandHandler<ChangeNameCommand>(handler);
-            bus.RegisterCommandHandler<ChangeOriginCommand>(handler);
-            bus.RegisterCommandHandler<ChangeQuantityCommand>(handler);
-            bus.RegisterCommandHandler<ChangeSpecCommand>(handler);
-            bus.RegisterCommandHandler<UpdateItemCommand>(handler);
+			bus.RegisterCommandHandler<CreateItemCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeAdditionalInformationCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeAppearanceCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeAssignedLocationCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeCategoryCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeCurrentLocationCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeIsLoanCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeManufacturerCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeModelCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeNameCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeOriginCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeQuantityCommand>(itemHandler);
+            bus.RegisterCommandHandler<ChangeSpecCommand>(itemHandler);
+            bus.RegisterCommandHandler<UpdateItemCommand>(itemHandler);
+
+            bus.RegisterCommandHandler<AddPhotoCommand>(photoHandler);
+            bus.RegisterCommandHandler<RemovePhotoCommand>(photoHandler);
         }
     }
 }

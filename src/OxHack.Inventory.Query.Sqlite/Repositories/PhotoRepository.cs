@@ -36,7 +36,11 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 			using (var dbContext = new InventoryDbContext(this.dbContextOptions))
 			{
 				var itemIdAsString = itemId.ToString();
-				var match = dbContext.Photos.SingleOrDefault(photo => photo.ItemId == itemIdAsString && photo.Filename == photoFilename);
+				var match = 
+					dbContext
+						.Photos
+						.AsNoTracking()
+						.SingleOrDefault(photo => photo.ItemId == itemIdAsString && photo.Filename == photoFilename);
 
 				if (match != null)
 				{

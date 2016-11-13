@@ -7,9 +7,9 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 {
     public class PhotoRemoved : IEvent
     {
-        public PhotoRemoved(Guid aggregateRootId, int concurrencyId, string photoFilename)
+        public PhotoRemoved(Guid id, int concurrencyId, string photoFilename)
         {
-            this.Id = aggregateRootId;
+            this.Id = id;
 			this.ConcurrencyId = concurrencyId;
             this.PhotoFilename = photoFilename;
         }

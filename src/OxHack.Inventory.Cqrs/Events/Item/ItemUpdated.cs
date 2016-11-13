@@ -9,7 +9,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 	public class ItemUpdated : IEvent
 	{
 		public ItemUpdated(
-			   Guid aggregateRootId,
+			   Guid id,
 			   string additionalInformation,
 			   string appearance,
 			   string assignedLocation,
@@ -26,7 +26,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			   int concurrencyId
 			   )
 		{
-			this.Id = aggregateRootId;
+			this.Id = id;
 			this.AdditionalInformation = additionalInformation;
 			this.Appearance = appearance;
 			this.AssignedLocation = assignedLocation;

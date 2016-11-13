@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Web.Extensions
 {
-    public static class CommandExtensions
+    public static class ConcurrencyIdExtensions
     {
         internal static int GetDecryptedConcurrencyId(this IConcurrencyAwareCommand @this, EncryptionService encryptionService)
         {
-            int concurrencyId;
-            var segments = @this.ConcurrencyId.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            return AsDecryptedConcurrencyId(@this.ConcurrencyId, encryptionService);
+        }
+
+        internal static int AsDecryptedConcurrencyId(this string concurrencyIdString, EncryptionService encryptionService)
+        {
+            var segments = concurrencyIdString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (segments.Length != 2)
             {
@@ -22,7 +26,7 @@ namespace OxHack.Inventory.Web.Extensions
             var encryptedConcurrencyId = Convert.FromBase64String(segments[0]);
             var iv = Convert.FromBase64String(segments[1]);
 
-            concurrencyId = Int32.Parse(encryptionService.DecryptAscii(encryptedConcurrencyId, iv));
+            int concurrencyId = Int32.Parse(encryptionService.DecryptAscii(encryptedConcurrencyId, iv));
             return concurrencyId;
         }
     }

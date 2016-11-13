@@ -8,7 +8,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 	public class ItemCreated : IEvent
 	{
 		public ItemCreated(
-			   Guid aggregateRootId,
+			   Guid id,
 			   string additionalInformation,
 			   string appearance,
 			   string assignedLocation,
@@ -23,7 +23,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			   string spec
 			   )
 		{
-			this.Id = aggregateRootId;
+			this.Id = id;
 			this.AdditionalInformation = additionalInformation;
 			this.Appearance = appearance;
 			this.AssignedLocation = assignedLocation;

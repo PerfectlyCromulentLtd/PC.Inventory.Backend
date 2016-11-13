@@ -7,9 +7,9 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 {
     public class AdditionalInformationChanged : IEvent
     {
-        public AdditionalInformationChanged(Guid aggregateRootId, int concurrencyId, string additionalInformation)
+        public AdditionalInformationChanged(Guid id, int concurrencyId, string additionalInformation)
         {
-            this.Id = aggregateRootId;
+            this.Id = id;
             this.ConcurrencyId = concurrencyId;
             this.AdditionalInformation = additionalInformation;
         }

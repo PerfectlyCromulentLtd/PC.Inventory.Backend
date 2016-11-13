@@ -5,11 +5,12 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 {
     public class AddPhotoCommand : ICommand, IConcurrencyAware, IMapToEvent<PhotoAdded>
     {
-        public AddPhotoCommand(Guid aggregateRootId, int concurrencyId, string photo) 
+        public AddPhotoCommand(Guid aggregateRootId, int concurrencyId, byte[] photoData, string folder) 
         {
             this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
-            this.Photo = photo;
+            this.PhotoData = photoData;
+            this.Folder = folder;
         }
 
         public Guid Id
@@ -22,14 +23,25 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             get;
         }
 
-        public string Photo
+        public byte[] PhotoData
         {
             get;
         }
 
+        public string Folder
+        {
+            get;
+        }
+
+        public string FileName
+        {
+            get;
+            set;
+        }
+
         public PhotoAdded GetEvent()
         {
-            return new PhotoAdded(this.Id, this.ConcurrencyId + 1, this.Photo);
+            return new PhotoAdded(this.Id, this.ConcurrencyId + 1, this.FileName);
         }
     }
 }

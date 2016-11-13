@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OxHack.Inventory.Query.Models;
 using OxHack.Inventory.Cqrs;
 using OxHack.Inventory.Cqrs.Commands;
+using OxHack.Inventory.Cqrs.Commands.Item;
 
 namespace OxHack.Inventory.Services
 {
@@ -40,14 +41,6 @@ namespace OxHack.Inventory.Services
 		public async Task<IEnumerable<Item>> GetItemsByCategoryAsync(string category)
 		{
 			return await this.itemRepo.GetItemsByCategoryAsync(category);
-		}
-
-		public async Task<string> AddPhotoToItemAsync(Guid itemId, byte[] photoData, string folder)
-		{
-			var filename = await this.photoRepo.StorePhotoAsync(photoData, folder);
-			await this.photoRepo.AddPhotoToItemAsync(itemId, filename);
-
-			return filename;
 		}
 	}
 }
