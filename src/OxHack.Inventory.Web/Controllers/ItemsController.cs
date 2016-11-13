@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Web.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/v1/[controller]")]
 	public class ItemsController : Controller
 	{
 		private readonly EncryptionService encryptionService;
@@ -71,7 +71,7 @@ namespace OxHack.Inventory.Web.Controllers
 				models = await this.itemService.GetAllItemsAsync();
 			}
 
-			return models.Select(item => item.ToWebModel(this.Host + this.config[this.hostingEnvironment.EnvironmentName + ":ItemPhotos"], this.encryptionService)).ToList();
+			return models.Select(item => item.ToWebModel(this.Host + this.PathToPhotos, this.encryptionService)).ToList();
 		}
 
 		[HttpGet("{id}")]
@@ -83,7 +83,7 @@ namespace OxHack.Inventory.Web.Controllers
 			{
 				return
 					new ObjectResult(
-						model.ToWebModel(this.Host + this.config[this.hostingEnvironment.EnvironmentName + ":ItemPhotos"], this.encryptionService));
+						model.ToWebModel(this.Host + this.PathToPhotos, this.encryptionService));
 			}
 			else
 			{
@@ -255,11 +255,9 @@ namespace OxHack.Inventory.Web.Controllers
 		}
 
 		private string Host
-		{
-			get
-			{
-				return this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
-			}
-		}
+			=> this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
+
+		private string PathToPhotos
+			=> this.config[this.hostingEnvironment.EnvironmentName + ":ItemPhotos"];
 	}
 }

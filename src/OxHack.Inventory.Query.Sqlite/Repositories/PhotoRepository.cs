@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OxHack.Inventory.Query.Repositories;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,6 +44,26 @@ namespace OxHack.Inventory.Query.Sqlite.Repositories
 					await dbContext.SaveChangesAsync();
 				}
 			}
+		}
+
+		public async Task<string> StorePhotoAsync(byte[] photoData, string folder)
+		{
+			FileInfo photoFile;
+			do
+			{
+				photoFile = new FileInfo(
+					Path.Combine(folder, Path.GetFileNameWithoutExtension(Path.GetRandomFileName()))
+					+ ".jpg");
+
+			}
+			while (photoFile.Exists);
+
+			using (var stream = photoFile.Create())
+			{
+				await stream.WriteAsync(photoData, 0, photoData.Length);
+			}
+
+			return photoFile.Name;
 		}
 	}
 }

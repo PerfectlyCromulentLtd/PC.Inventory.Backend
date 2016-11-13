@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace OxHack.Inventory.Web.Controllers
 {
 	[Obsolete("This is a debugging tool.  It should NOT go out to production.")]
-	[Route("api/[controller]")]
+	[Route("api/v1/[controller]")]
 	public class MigrationController : Controller
 	{
 		private readonly ItemService itemService;
@@ -21,9 +21,9 @@ namespace OxHack.Inventory.Web.Controllers
 
 		public MigrationController(IHostingEnvironment environment, ItemService itemService, IEventStore eventStore, IBus bus)
 		{
-			if (!environment.IsDevelopment())
+			if (environment.IsProduction())
 			{
-				throw new InvalidOperationException("This controller cannot be used outside of Development.");
+				throw new InvalidOperationException("This controller cannot be used in Production.");
 			}
 
 			this.itemService = itemService;

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace OxHack.Inventory.Web.Controllers
 {
 	[Obsolete("This is a debugging tool.  It should NOT go out to production.")]
-	[Route("api/[controller]")]
+	[Route("api/v1/[controller]")]
 	public class EventStoreController : Controller
 	{
 		private readonly IEventStore eventStore;
@@ -26,9 +26,9 @@ namespace OxHack.Inventory.Web.Controllers
 			IBus bus, 
 			ItemService itemService)
 		{
-			if (!environment.IsDevelopment())
+			if (environment.IsProduction())
 			{
-				throw new InvalidOperationException("This controller cannot be used outside of Development.");
+				throw new InvalidOperationException("This controller cannot be used in Production.");
 			}
 
 			this.eventStore = eventStore;

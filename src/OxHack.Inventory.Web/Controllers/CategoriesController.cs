@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Web.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/v1/[controller]")]
 	public class CategoriesController : Controller
 	{
 		private readonly CategoryService categoryService;

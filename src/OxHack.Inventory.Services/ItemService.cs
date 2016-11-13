@@ -11,12 +11,14 @@ namespace OxHack.Inventory.Services
 {
 	public class ItemService
 	{
-		private readonly IBus bus;
 		private readonly IItemRepository itemRepo;
+		private readonly IPhotoRepository photoRepo;
+		private readonly IBus bus;
 
-		public ItemService(IItemRepository itemRepo, IBus bus)
+		public ItemService(IItemRepository itemRepo, IPhotoRepository photoRepo, IBus bus)
 		{
 			this.itemRepo = itemRepo;
+			this.photoRepo = photoRepo;
 			this.bus = bus;
 		}
 
@@ -38,6 +40,14 @@ namespace OxHack.Inventory.Services
 		public async Task<IEnumerable<Item>> GetItemsByCategoryAsync(string category)
 		{
 			return await this.itemRepo.GetItemsByCategoryAsync(category);
+		}
+
+		public async Task<string> AddPhotoToItemAsync(Guid itemId, byte[] photoData, string folder)
+		{
+			var filename = await this.photoRepo.StorePhotoAsync(photoData, folder);
+			await this.photoRepo.AddPhotoToItemAsync(itemId, filename);
+
+			return filename;
 		}
 	}
 }
