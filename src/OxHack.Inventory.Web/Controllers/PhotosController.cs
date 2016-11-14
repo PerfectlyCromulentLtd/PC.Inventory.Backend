@@ -15,15 +15,15 @@ namespace OxHack.Inventory.Web.Controllers
 	[Route("api/v1/items/{itemId}/[controller]")]
 	public class PhotosController : Controller
 	{
-        private readonly ItemService itemService;
-        private readonly EncryptionService encryptionService;
-        private readonly IConfiguration config;
-        private readonly IHostingEnvironment hostingEnvironment;
+		private readonly ItemService itemService;
+		private readonly EncryptionService encryptionService;
+		private readonly IConfiguration config;
+		private readonly IHostingEnvironment hostingEnvironment;
 
-        public PhotosController(ItemService itemService, EncryptionService encryptionService, IConfiguration config, IHostingEnvironment hostingEnvironment)
+		public PhotosController(ItemService itemService, EncryptionService encryptionService, IConfiguration config, IHostingEnvironment hostingEnvironment)
 		{
 			this.itemService = itemService;
-            this.encryptionService = encryptionService;
+			this.encryptionService = encryptionService;
 			this.config = config;
 			this.hostingEnvironment = hostingEnvironment;
 		}
@@ -38,37 +38,61 @@ namespace OxHack.Inventory.Web.Controllers
 
 		[HttpPost]
 		public async Task<Uri> UploadPhoto(Guid itemId, [FromHeader] string concurrencyId)
-        {
-            var photoData = new byte[(int)this.Request.ContentLength];
-            this.Request.Body.Read(photoData, 0, (int)this.Request.ContentLength);
+		{
+			byte[] photoData = await this.ReadRequestBodyToBufferAsync();
 
-            var folder = Path.Combine(this.hostingEnvironment.WebRootPath, this.PathToPhotos.Trim('/'));
+			var folder = Path.Combine(this.hostingEnvironment.WebRootPath, this.PathToPhotos.Trim('/'));
 
-            int decryptedConcurrencyId = this.GetDecryptedConcurrencyId(concurrencyId);
+			int decryptedConcurrencyId = this.GetDecryptedConcurrencyId(concurrencyId);
 
-            var command = new AddPhotoCommand(itemId, decryptedConcurrencyId, photoData, folder);
-            await this.itemService.IssueCommandAsync(command);
+			var command = new AddPhotoCommand(itemId, decryptedConcurrencyId, photoData, folder);
+			await this.itemService.IssueCommandAsync(command);
 
-            var result = new Uri(this.Host + this.PathToPhotos + command.FileName);
+			var result = new Uri(this.Host + this.PathToPhotos + command.FileName);
 
-            return result;
-        }
+			return result;
+		}
 
-        [HttpDelete("{photo}")]
-        public async Task UnlinkPhoto(Guid itemId, string photo, [FromHeader] string concurrencyId)
-        {
-            int decryptedConcurrencyId = this.GetDecryptedConcurrencyId(concurrencyId);
-            var command = new RemovePhotoCommand(itemId, decryptedConcurrencyId, photo);
+		private async Task<byte[]> ReadRequestBodyToBufferAsync()
+		{
+			byte[] buffer;
+			var stream = this.Request.Body;
+			var length = (int)this.Request.ContentLength.Value;
 
-            await this.itemService.IssueCommandAsync(command);
-        }
+			buffer = new byte[length];
+			int bytesRead = 0;
+			for (int i = 0; i < 60; i++)
+			{
+				bytesRead += await this.Request.Body.ReadAsync(buffer, bytesRead, length - bytesRead);
+				if (bytesRead >= length)
+				{
+					break;
+				}
+				else
+				{
+					// Mega Hack: We've read all the data available (so far) but haven't hit the end of the stream.  Wait a sec.
+					await Task.Delay(1000);
+				}
+			}
 
-        private int GetDecryptedConcurrencyId(string concurrencyId)
-        {
-            return concurrencyId.AsDecryptedConcurrencyId(this.encryptionService);
-        }
+			return buffer;
+		}
 
-        private string Host
+		[HttpDelete("{photo}")]
+		public async Task UnlinkPhoto(Guid itemId, string photo, [FromHeader] string concurrencyId)
+		{
+			int decryptedConcurrencyId = this.GetDecryptedConcurrencyId(concurrencyId);
+			var command = new RemovePhotoCommand(itemId, decryptedConcurrencyId, photo);
+
+			await this.itemService.IssueCommandAsync(command);
+		}
+
+		private int GetDecryptedConcurrencyId(string concurrencyId)
+		{
+			return concurrencyId.AsDecryptedConcurrencyId(this.encryptionService);
+		}
+
+		private string Host
 			=> this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
 
 		private string PathToPhotos
