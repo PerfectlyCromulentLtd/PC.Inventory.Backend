@@ -48,7 +48,10 @@ namespace OxHack.Inventory.Query.Handlers
 				message.Apply(model);
 
 				await this.itemRepository.CreateItemAsync(model);
-				await this.photoRepository.AddPhotoToItemAsync(message.Id, ItemQueryModelUpdater.PlaceholderImage);
+				if (!model.Photos?.Any() ?? true)
+				{
+					await this.photoRepository.AddPhotoToItemAsync(message.Id, ItemQueryModelUpdater.PlaceholderImage);
+				}
 			}
 			catch
 			{

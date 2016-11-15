@@ -20,7 +20,8 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			   string name,
 			   string origin,
 			   int quantity,
-			   string spec
+			   string spec,
+			   List<string> photos
 			   )
 		{
 			this.Id = id;
@@ -36,6 +37,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			this.Origin = origin;
 			this.Quantity = quantity;
 			this.Spec = spec;
+			this.Photos = photos;
 		}
 
 		public Guid Id
@@ -106,6 +108,11 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 		public int ConcurrencyId
 			=> 1;
 
+		public List<string> Photos
+		{
+			get;
+		}
+
 		public dynamic Apply(dynamic aggregate)
 		{
 			aggregate.AggregateRootId = this.Id;
@@ -122,7 +129,7 @@ namespace OxHack.Inventory.Cqrs.Events.Item
 			aggregate.Origin = this.Origin;
 			aggregate.Quantity = this.Quantity;
 			aggregate.Spec = this.Spec;
-			aggregate.Photos = new List<string>();
+			aggregate.Photos = this.Photos.ToList();
 
 			return aggregate;
 		}

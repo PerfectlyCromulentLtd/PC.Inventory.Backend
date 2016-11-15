@@ -45,6 +45,11 @@ namespace OxHack.Inventory.Web.Extensions
         public static IEnumerable<Uri> ToUris(this IEnumerable<string> @this, string path)
         {
             return @this?.Select(item => new Uri(path + item)).ToList();
-        }
-    }
+		}
+
+		public static IEnumerable<string> FromUriStrings(this IEnumerable<string> @this)
+		{
+			return @this?.Select(uriString => new Uri(uriString).Segments.Last()).ToList();
+		}
+	}
 }

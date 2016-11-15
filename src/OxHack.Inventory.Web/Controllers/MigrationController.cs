@@ -96,7 +96,8 @@ namespace OxHack.Inventory.Web.Controllers
 							item.Name,
 							item.Origin,
 							item.Quantity,
-							item.Spec))
+							item.Spec,
+							new List<string>()))
 					.ToList();
 
 			List<PhotoAdded> photoAddedEvents =

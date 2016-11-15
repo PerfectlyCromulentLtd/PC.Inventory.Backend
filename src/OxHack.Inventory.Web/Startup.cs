@@ -15,11 +15,11 @@ namespace OxHack.Inventory.Web
 {
 	public class Startup
 	{
-        private readonly IHostingEnvironment hostingEnvironment;
+		private readonly IHostingEnvironment hostingEnvironment;
 
-        public Startup(IHostingEnvironment env)
+		public Startup(IHostingEnvironment env)
 		{
-            this.hostingEnvironment = env;
+			this.hostingEnvironment = env;
 
 			// Set up configuration sources.
 			var builder = new ConfigurationBuilder()

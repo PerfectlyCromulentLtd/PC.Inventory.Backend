@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using OxHack.Inventory.Cqrs.Commands.Item;
+using OxHack.Inventory.Cqrs.Commands.Photo;
 using OxHack.Inventory.Services;
 using OxHack.Inventory.Web.Extensions;
 using OxHack.Inventory.Web.Services;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Web.Controllers
 {
-	[Route("api/v1/items/{itemId}/[controller]")]
+	[Route("api/v1/")]
 	public class PhotosController : Controller
 	{
 		private readonly ItemService itemService;
@@ -29,6 +30,7 @@ namespace OxHack.Inventory.Web.Controllers
 		}
 
 		[HttpGet]
+		[Route("items/{itemId}/[controller]")]
 		public async Task<IEnumerable<Uri>> GetItemPhotos(Guid itemId)
 		{
 			var model = await this.itemService.GetItemByIdAsync(itemId);
@@ -37,7 +39,8 @@ namespace OxHack.Inventory.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<Uri> UploadPhoto(Guid itemId, [FromHeader] string concurrencyId)
+		[Route("items/{itemId}/[controller]")]
+		public async Task<Uri> UploadAndAddPhoto(Guid itemId, [FromHeader] string concurrencyId)
 		{
 			byte[] photoData = await this.ReadRequestBodyToBufferAsync();
 
@@ -45,10 +48,26 @@ namespace OxHack.Inventory.Web.Controllers
 
 			int decryptedConcurrencyId = this.GetDecryptedConcurrencyId(concurrencyId);
 
-			var command = new AddPhotoCommand(itemId, decryptedConcurrencyId, photoData, folder);
+			var command = new UploadAndAddPhotoCommand(itemId, decryptedConcurrencyId, photoData, folder);
 			await this.itemService.IssueCommandAsync(command);
 
-			var result = new Uri(this.Host + this.PathToPhotos + command.FileName);
+			var result = new Uri(this.Host + this.PathToPhotos + command.ResultingFileName);
+
+			return result;
+		}
+
+		[HttpPost]
+		[Route("[controller]")]
+		public async Task<Uri> UploadPhoto()
+		{
+			byte[] photoData = await this.ReadRequestBodyToBufferAsync();
+
+			var folder = Path.Combine(this.hostingEnvironment.WebRootPath, this.PathToPhotos.Trim('/'));
+
+			var command = new UploadPhotoCommand(photoData, folder);
+			await this.itemService.IssueCommandAsync(command);
+
+			var result = new Uri(this.Host + this.PathToPhotos + command.ResultingFileName);
 
 			return result;
 		}
@@ -78,7 +97,8 @@ namespace OxHack.Inventory.Web.Controllers
 			return buffer;
 		}
 
-		[HttpDelete("{photo}")]
+		[HttpDelete]
+		[Route("items/{itemId}/[controller]/{photo}")]
 		public async Task UnlinkPhoto(Guid itemId, string photo, [FromHeader] string concurrencyId)
 		{
 			int decryptedConcurrencyId = this.GetDecryptedConcurrencyId(concurrencyId);

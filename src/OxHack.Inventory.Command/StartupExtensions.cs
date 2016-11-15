@@ -2,6 +2,7 @@
 using OxHack.Inventory.Command.Handlers;
 using OxHack.Inventory.Cqrs;
 using OxHack.Inventory.Cqrs.Commands.Item;
+using OxHack.Inventory.Cqrs.Commands.Photo;
 using OxHack.Inventory.Query.Repositories;
 
 namespace OxHack.Inventory.Services
@@ -35,7 +36,9 @@ namespace OxHack.Inventory.Services
             bus.RegisterCommandHandler<ChangeSpecCommand>(itemHandler);
             bus.RegisterCommandHandler<UpdateItemCommand>(itemHandler);
 
-            bus.RegisterCommandHandler<AddPhotoCommand>(photoHandler);
+			bus.RegisterCommandHandler<UploadAndAddPhotoCommand>(photoHandler);
+			bus.RegisterCommandHandler<UploadPhotoCommand>(photoHandler);
+			bus.RegisterCommandHandler<AddPhotoCommand>(photoHandler);
             bus.RegisterCommandHandler<RemovePhotoCommand>(photoHandler);
         }
     }

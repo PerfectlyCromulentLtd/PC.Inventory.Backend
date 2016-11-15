@@ -158,7 +158,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 			if (stillValid)
 			{
-				command = body?.ToObject(commandType) as IConcurrencyAwareCommand;
+				command = body?.ToObject(commandType) as ICommand;
 
 				if (command == null)
 				{

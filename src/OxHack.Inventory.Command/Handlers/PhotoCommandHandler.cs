@@ -6,12 +6,15 @@ using OxHack.Inventory.Cqrs.Events.Item;
 using System.Threading.Tasks;
 using System;
 using OxHack.Inventory.Query.Repositories;
+using OxHack.Inventory.Cqrs.Commands.Photo;
 
 namespace OxHack.Inventory.Command.Handlers
 {
     internal class PhotoCommandHandler :
-        IHandle<AddPhotoCommand>,
-        IHandle<RemovePhotoCommand>
+		IHandle<UploadAndAddPhotoCommand>,
+		IHandle<UploadPhotoCommand>,
+		IHandle<AddPhotoCommand>,
+		IHandle<RemovePhotoCommand>
     {
         private readonly IEventStore eventStore;
         private readonly IPhotoRepository photoRepo;
@@ -20,18 +23,29 @@ namespace OxHack.Inventory.Command.Handlers
         {
             this.eventStore = eventStore;
             this.photoRepo = photoRepo;
-        }
+		}
 
-        public async Task Handle(AddPhotoCommand message)
+		public async Task Handle(UploadAndAddPhotoCommand message)
+		{
+			await this.Handle(message.UploadPhotoCommand);
+			message.AddPhotoCommand.FileName = message.UploadPhotoCommand.ResultingFileName;
+
+			await this.Handle(message.AddPhotoCommand);
+		}
+
+		public async Task Handle(UploadPhotoCommand message)
+		{
+			message.ResultingFileName = await this.photoRepo.StorePhotoAsync(message.PhotoData, message.Folder);
+		}
+
+		public async Task Handle(AddPhotoCommand message)
         {
-            message.FileName = await this.photoRepo.StorePhotoAsync(message.PhotoData, message.Folder);
-
             var @event = message.GetEvent();
             this.eventStore.StoreEvent(@event);
             await Task.WhenAll();
-        }
+		}
 
-        public async Task Handle(RemovePhotoCommand message)
+		public async Task Handle(RemovePhotoCommand message)
         {
             var @event = message.GetEvent();
             this.eventStore.StoreEvent(@event);

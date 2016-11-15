@@ -1,5 +1,8 @@
-﻿using OxHack.Inventory.Web.Services;
+﻿using OxHack.Inventory.Web.Extensions;
+using OxHack.Inventory.Web.Services;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using DomainCommands = OxHack.Inventory.Cqrs.Commands;
 
 namespace OxHack.Inventory.Web.Models.Commands.Item
@@ -84,6 +87,12 @@ namespace OxHack.Inventory.Web.Models.Commands.Item
             set;
         }
 
+		public List<string> Photos
+		{
+			get;
+			set;
+		}
+
         public DomainCommands.ICommand ToDomainCommand(EncryptionService encryptionService)
         {
             return
@@ -100,7 +109,8 @@ namespace OxHack.Inventory.Web.Models.Commands.Item
                     this.Name,
                     this.Origin,
                     this.Quantity,
-                    this.Spec);
+                    this.Spec,
+					this.Photos.FromUriStrings().ToList());
         }
     }
 }
