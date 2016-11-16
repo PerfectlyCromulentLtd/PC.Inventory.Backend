@@ -12,7 +12,7 @@ namespace OxHack.Inventory.Cqrs.Events
 	/// </summary>
     public class StoredEvent
     {
-		public StoredEvent(string checkpointToken, DateTime commitStamp, IEvent @event)
+		public StoredEvent(string checkpointToken, DateTime commitStamp, IConcurrencyAwareEvent @event)
 		{
 			this.CheckpointToken = checkpointToken;
 			this.CommitStamp = commitStamp;

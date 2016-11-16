@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
-    public class PhotoRemoved : IEvent
-    {
+    public class PhotoRemoved : IAggregateEvent
+	{
         public PhotoRemoved(Guid id, int concurrencyId, string photoFilename)
         {
             this.Id = id;

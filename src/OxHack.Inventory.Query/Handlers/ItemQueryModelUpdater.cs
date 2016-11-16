@@ -133,7 +133,7 @@ namespace OxHack.Inventory.Query.Handlers
         public async Task Handle(ItemUpdated message) =>
             await this.PersistEventChanges(message, item => message.Apply(item));
 
-        private async Task PersistEventChanges<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IEvent
+        private async Task PersistEventChanges<TEvent>(TEvent @event, Action<Item> mutation) where TEvent : IAggregateEvent
 		{
 			try
 			{

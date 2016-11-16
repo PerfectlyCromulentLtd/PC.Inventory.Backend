@@ -36,19 +36,21 @@ namespace OxHack.Inventory.Command.Handlers
 		public async Task Handle(UploadPhotoCommand message)
 		{
 			message.ResultingFileName = await this.photoRepo.StorePhotoAsync(message.PhotoData, message.Folder);
+			var @event = message.GetEvent();
+			this.eventStore.StoreEvent("Photo Uploads", @event);
 		}
 
 		public async Task Handle(AddPhotoCommand message)
         {
             var @event = message.GetEvent();
-            this.eventStore.StoreEvent(@event);
+            this.eventStore.StoreAggregateEvent(@event);
             await Task.WhenAll();
 		}
 
 		public async Task Handle(RemovePhotoCommand message)
         {
             var @event = message.GetEvent();
-            this.eventStore.StoreEvent(@event);
+            this.eventStore.StoreAggregateEvent(@event);
             await Task.WhenAll();
         }
     }

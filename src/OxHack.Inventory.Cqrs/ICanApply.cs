@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs
 {
-    public interface ICanApply<in TMessage> where TMessage : IEvent
+    public interface ICanApply<in TMessage> where TMessage : IConcurrencyAwareEvent
     {
 		void Apply(TMessage message);
     }

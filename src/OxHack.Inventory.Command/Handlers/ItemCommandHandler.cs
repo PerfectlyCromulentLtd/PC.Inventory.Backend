@@ -32,78 +32,78 @@ namespace OxHack.Inventory.Command.Handlers
 
         public async Task Handle(CreateItemCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeAdditionalInformationCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeAppearanceCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeAssignedLocationCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeCategoryCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeCurrentLocationCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeIsLoanCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeManufacturerCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeModelCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeNameCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeOriginCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeQuantityCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(ChangeSpecCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
         public async Task Handle(UpdateItemCommand message)
         {
-            await this.StoreEvent(message);
+            await this.StoreAggregateEvent(message);
         }
 
-        private async Task StoreEvent<TEvent>(IMapToEvent<TEvent> source) where TEvent : IEvent
+        private async Task StoreAggregateEvent<TEvent>(IMapToEvent<TEvent> source) where TEvent : IAggregateEvent
         {
             var @event = source.GetEvent();
-			this.eventStore.StoreEvent(@event);
+			this.eventStore.StoreAggregateEvent(@event);
 			await Task.WhenAll();
         }
     }

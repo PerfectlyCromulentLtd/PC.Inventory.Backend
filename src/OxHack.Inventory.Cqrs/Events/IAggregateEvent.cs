@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events
 {
-    public interface IEvent : IMessage
+    public interface IAggregateEvent : IConcurrencyAwareEvent
     {
+		Guid Id
+		{
+			get;
+		}
+		dynamic Apply(dynamic aggregate);
     }
 }

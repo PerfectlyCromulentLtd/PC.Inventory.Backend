@@ -40,8 +40,18 @@ namespace OxHack.Inventory.Web.Controllers
 
 		[HttpPost]
 		[Route("items/{itemId}/[controller]")]
-		public async Task<Uri> UploadAndAddPhoto(Guid itemId, [FromHeader] string concurrencyId)
+		public async Task<IActionResult> UploadAndAddPhoto(
+			Guid itemId,
+			[FromHeader] string concurrencyId,
+			[FromHeader(Name = Constants.InventoryClientNameHttpHeader)] string clientName,
+			[FromHeader(Name = Constants.InventoryClientVersionHttpHeader)] string clientVersion,
+			[FromHeader(Name = Constants.InventoryClientIdHttpHeader)] string clientId)
 		{
+			if (String.IsNullOrWhiteSpace(clientName) || String.IsNullOrWhiteSpace(clientVersion) || String.IsNullOrWhiteSpace(clientId))
+			{
+				return this.BadRequest(Constants.MissingHttpHeaderMessage);
+			}
+
 			byte[] photoData = await this.ReadRequestBodyToBufferAsync();
 
 			var folder = Path.Combine(this.hostingEnvironment.WebRootPath, this.PathToPhotos.Trim('/'));
@@ -53,13 +63,21 @@ namespace OxHack.Inventory.Web.Controllers
 
 			var result = new Uri(this.Host + this.PathToPhotos + command.ResultingFileName);
 
-			return result;
+			return this.Ok(result);
 		}
 
 		[HttpPost]
 		[Route("[controller]")]
-		public async Task<Uri> UploadPhoto()
+		public async Task<IActionResult> UploadPhoto(
+			[FromHeader(Name = Constants.InventoryClientNameHttpHeader)] string clientName,
+			[FromHeader(Name = Constants.InventoryClientVersionHttpHeader)] string clientVersion,
+			[FromHeader(Name = Constants.InventoryClientIdHttpHeader)] string clientId)
 		{
+			if (String.IsNullOrWhiteSpace(clientName) || String.IsNullOrWhiteSpace(clientVersion) || String.IsNullOrWhiteSpace(clientId))
+			{
+				return this.BadRequest(Constants.MissingHttpHeaderMessage);
+			}
+
 			byte[] photoData = await this.ReadRequestBodyToBufferAsync();
 
 			var folder = Path.Combine(this.hostingEnvironment.WebRootPath, this.PathToPhotos.Trim('/'));
@@ -69,7 +87,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 			var result = new Uri(this.Host + this.PathToPhotos + command.ResultingFileName);
 
-			return result;
+			return this.Ok(result);
 		}
 
 		private async Task<byte[]> ReadRequestBodyToBufferAsync()
@@ -99,12 +117,25 @@ namespace OxHack.Inventory.Web.Controllers
 
 		[HttpDelete]
 		[Route("items/{itemId}/[controller]/{photo}")]
-		public async Task UnlinkPhoto(Guid itemId, string photo, [FromHeader] string concurrencyId)
+		public async Task<IActionResult> UnlinkPhoto(
+			Guid itemId,
+			string photo,
+			[FromHeader] string concurrencyId,
+			[FromHeader(Name = Constants.InventoryClientNameHttpHeader)] string clientName,
+			[FromHeader(Name = Constants.InventoryClientVersionHttpHeader)] string clientVersion,
+			[FromHeader(Name = Constants.InventoryClientIdHttpHeader)] string clientId)
 		{
+			if (String.IsNullOrWhiteSpace(clientName) || String.IsNullOrWhiteSpace(clientVersion) || String.IsNullOrWhiteSpace(clientId))
+			{
+				return this.BadRequest(Constants.MissingHttpHeaderMessage);
+			}
+
 			int decryptedConcurrencyId = this.GetDecryptedConcurrencyId(concurrencyId);
 			var command = new RemovePhotoCommand(itemId, decryptedConcurrencyId, photo);
 
 			await this.itemService.IssueCommandAsync(command);
+
+			return this.Ok();
 		}
 
 		private int GetDecryptedConcurrencyId(string concurrencyId)

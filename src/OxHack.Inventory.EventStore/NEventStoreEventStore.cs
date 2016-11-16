@@ -20,7 +20,7 @@ namespace OxHack.Inventory.EventStore
 			this.eventStore = eventStore;
 		}
 
-		public void StoreEvent(IEvent message)
+		public void StoreAggregateEvent(IAggregateEvent message)
 		{
 			try
 			{
@@ -40,13 +40,33 @@ namespace OxHack.Inventory.EventStore
 			}
 		}
 
+		public void StoreEvent(string streamName, IEvent message)
+		{
+			try
+			{
+				using (var stream = this.eventStore.OpenStream(streamName))
+				{
+					stream.Add(new EventMessage { Body = message });
+					stream.CommitChanges(Guid.NewGuid());
+				}
+			}
+			catch (DuplicateCommitException e)
+			{
+				throw new OptimisticConcurrencyException("Unable to store event.  A duplicate event already exists.", e);
+			}
+			catch (ConcurrencyException e)
+			{
+				throw new OptimisticConcurrencyException("Unable to store event.", e);
+			}
+		}
+
 		public IReadOnlyList<StoredEvent> GetAllEvents()
 		{
 			var commits = this.eventStore.Advanced.GetFrom().ToList();
 
 			var events =
 				commits
-					.SelectMany(commit => commit.Events.Select(@event => new StoredEvent(commit.CheckpointToken, commit.CommitStamp, @event.Body as IEvent)))
+					.SelectMany(commit => commit.Events.Select(@event => new StoredEvent(commit.CheckpointToken, commit.CommitStamp, @event.Body as IConcurrencyAwareEvent)))
 					.ToList();
 
 			return events.AsReadOnly();
@@ -58,7 +78,7 @@ namespace OxHack.Inventory.EventStore
 
 			var events =
 				commits
-					.SelectMany(commit => commit.Events.Select(@event => new StoredEvent(commit.CheckpointToken, commit.CommitStamp, @event.Body as IEvent)))
+					.SelectMany(commit => commit.Events.Select(@event => new StoredEvent(commit.CheckpointToken, commit.CommitStamp, @event.Body as IConcurrencyAwareEvent)))
 					.ToList();
 
 			return events.AsReadOnly();

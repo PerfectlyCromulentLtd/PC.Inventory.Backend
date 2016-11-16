@@ -1,9 +1,10 @@
 ﻿using OxHack.Inventory.Cqrs.Events.Item;
+using OxHack.Inventory.Cqrs.Events.Photo;
 using System;
 
 namespace OxHack.Inventory.Cqrs.Commands.Photo
 {
-    public class UploadPhotoCommand : ICommand
+    public class UploadPhotoCommand : ICommand, IMapToEvent<PhotoUploaded>
     {
         public UploadPhotoCommand(byte[] photoData, string folder) 
         {
@@ -29,5 +30,10 @@ namespace OxHack.Inventory.Cqrs.Commands.Photo
             get;
             set;
         }
+
+		public PhotoUploaded GetEvent()
+		{
+			return new PhotoUploaded(this.ResultingFileName);
+		}
 	}
 }

@@ -86,6 +86,7 @@ namespace OxHack.Inventory.Web.Controllers
 				var aggregates =
 					events
 						.Select(item => item.Event)
+						.OfType<IAggregateEvent>()
 						.GroupBy(item => item.Id)
 						.Select(stream => stream.OrderBy(item => item.ConcurrencyId).Aggregate(new ExpandoObject(), (aggregate, @event) => @event.Apply(aggregate)));
 
@@ -134,8 +135,8 @@ namespace OxHack.Inventory.Web.Controllers
 						new PhotoAdded(item.Id, index + 2, photo)))
 					.ToList();
 
-			itemCreatedEvents.ForEach(item => this.eventStore.StoreEvent(item));
-			photoAddedEvents.ForEach(item => this.eventStore.StoreEvent(item));
+			itemCreatedEvents.ForEach(item => this.eventStore.StoreAggregateEvent(item));
+			photoAddedEvents.ForEach(item => this.eventStore.StoreAggregateEvent(item));
 		}
 	}
 }

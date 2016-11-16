@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
-    public class NameChanged : IEvent
-    {
+    public class NameChanged : IAggregateEvent
+	{
         public NameChanged(Guid id, int concurrencyId, string name)
         {
             this.Id = id;

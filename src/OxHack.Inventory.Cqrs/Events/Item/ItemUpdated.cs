@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
 	[Obsolete("Get rid of this class ASAP.  It was just created to help speed up development.  You should be sending updates through Deltas over PATCH.")]
-	public class ItemUpdated : IEvent
+	public class ItemUpdated : IAggregateEvent
 	{
 		public ItemUpdated(
 			   Guid id,

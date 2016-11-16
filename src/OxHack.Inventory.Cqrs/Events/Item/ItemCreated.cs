@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Events.Item
 {
-	public class ItemCreated : IEvent
+	public class ItemCreated : IAggregateEvent
 	{
 		public ItemCreated(
 			   Guid id,

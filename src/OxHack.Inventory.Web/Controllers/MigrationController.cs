@@ -76,7 +76,7 @@ namespace OxHack.Inventory.Web.Controllers
 			return result;
 		}
 
-		private async Task<IEnumerable<IEvent>> GenerateEventsFromQueryDb(bool persistResults)
+		private async Task<IEnumerable<IConcurrencyAwareEvent>> GenerateEventsFromQueryDb(bool persistResults)
 		{
 			var items = (await this.itemService.GetAllItemsAsync()).ToList();
 
@@ -110,14 +110,14 @@ namespace OxHack.Inventory.Web.Controllers
 
 			var allEvents =
 				itemCreationEvents
-					.Cast<IEvent>()
+					.Cast<IAggregateEvent>()
 					.Concat(photoAddedEvents);
 
 			if (persistResults)
 			{
 				foreach (var @event in allEvents)
 				{
-					this.eventStore.StoreEvent(@event);
+					this.eventStore.StoreAggregateEvent(@event);
 				}
 			}
 

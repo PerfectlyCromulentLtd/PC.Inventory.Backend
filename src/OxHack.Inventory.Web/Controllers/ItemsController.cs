@@ -92,8 +92,17 @@ namespace OxHack.Inventory.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateItem([FromBody] CreateItemCommand command)
+		public async Task<IActionResult> CreateItem(
+            [FromBody] CreateItemCommand command,
+			[FromHeader(Name = Constants.InventoryClientNameHttpHeader)] string clientName,
+			[FromHeader(Name = Constants.InventoryClientVersionHttpHeader)] string clientVersion,
+			[FromHeader(Name = Constants.InventoryClientIdHttpHeader)] string clientId)
 		{
+			if (String.IsNullOrWhiteSpace(clientName) || String.IsNullOrWhiteSpace(clientVersion) || String.IsNullOrWhiteSpace(clientId))
+			{
+				return this.BadRequest(Constants.MissingHttpHeaderMessage);
+			}
+
 			IActionResult result;
 			if (!this.ValidateDomainModel(nameof(CreateItemCommand), out result))
 			{
@@ -118,8 +127,18 @@ namespace OxHack.Inventory.Web.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Put(Guid id, [FromBody] JObject body)
+		public async Task<IActionResult> Put(
+            Guid id, 
+            [FromBody] JObject body,
+			[FromHeader(Name = Constants.InventoryClientNameHttpHeader)] string clientName,
+			[FromHeader(Name = Constants.InventoryClientVersionHttpHeader)] string clientVersion,
+			[FromHeader(Name = Constants.InventoryClientIdHttpHeader)] string clientId)
 		{
+			if (String.IsNullOrWhiteSpace(clientName) || String.IsNullOrWhiteSpace(clientVersion) || String.IsNullOrWhiteSpace(clientId))
+			{
+				return this.BadRequest(Constants.MissingHttpHeaderMessage);
+			}
+
 			IActionResult result;
 			ICommand command;
 			if (!this.ValidatePut(id, body, out command, out result))
