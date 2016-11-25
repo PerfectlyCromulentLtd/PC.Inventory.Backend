@@ -20,14 +20,16 @@ namespace OxHack.Inventory.EventStore
 			this.eventStore = eventStore;
 		}
 
-		public void StoreAggregateEvent(IAggregateEvent message)
+		public void StoreAggregateEvent(IAggregateEvent @event, dynamic eventMetadata)
 		{
 			try
 			{
-				using (var stream = this.eventStore.OpenStream(message.Id, message.ConcurrencyId - 1))
+				using (var stream = this.eventStore.OpenStream(@event.Id, @event.ConcurrencyId - 1))
 				{
-					stream.Add(new EventMessage { Body = message });
-					stream.CommitChanges(new Guid(message.ConcurrencyId, 0, 0, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }));
+					var message = new EventMessage { Body = @event };
+					message.Headers.Add("commandIssuerMetadata", eventMetadata);
+					stream.Add(message);
+					stream.CommitChanges(new Guid(@event.ConcurrencyId, 0, 0, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }));
 				}
 			}
 			catch (DuplicateCommitException e)
@@ -40,13 +42,15 @@ namespace OxHack.Inventory.EventStore
 			}
 		}
 
-		public void StoreEvent(string streamName, IEvent message)
+		public void StoreEvent(string streamName, IEvent @event, dynamic eventMetadata)
 		{
 			try
 			{
 				using (var stream = this.eventStore.OpenStream(streamName))
 				{
-					stream.Add(new EventMessage { Body = message });
+					var message = new EventMessage { Body = @event };
+					message.Headers.Add("commandIssuerMetadata", eventMetadata);
+					stream.Add(message);
 					stream.CommitChanges(Guid.NewGuid());
 				}
 			}

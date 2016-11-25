@@ -37,20 +37,20 @@ namespace OxHack.Inventory.Command.Handlers
 		{
 			message.ResultingFileName = await this.photoRepo.StorePhotoAsync(message.PhotoData, message.Folder);
 			var @event = message.GetEvent();
-			this.eventStore.StoreEvent("Photo Uploads", @event);
+			this.eventStore.StoreEvent("Photo Uploads", @event, message.IssuerMetadata);
 		}
 
 		public async Task Handle(AddPhotoCommand message)
         {
             var @event = message.GetEvent();
-            this.eventStore.StoreAggregateEvent(@event);
+            this.eventStore.StoreAggregateEvent(@event, message.IssuerMetadata);
             await Task.WhenAll();
 		}
 
 		public async Task Handle(RemovePhotoCommand message)
         {
             var @event = message.GetEvent();
-            this.eventStore.StoreAggregateEvent(@event);
+            this.eventStore.StoreAggregateEvent(@event, message.IssuerMetadata);
             await Task.WhenAll();
         }
     }

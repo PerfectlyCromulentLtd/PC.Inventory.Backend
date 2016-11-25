@@ -135,8 +135,8 @@ namespace OxHack.Inventory.Web.Controllers
 						new PhotoAdded(item.Id, index + 2, photo)))
 					.ToList();
 
-			itemCreatedEvents.ForEach(item => this.eventStore.StoreAggregateEvent(item));
-			photoAddedEvents.ForEach(item => this.eventStore.StoreAggregateEvent(item));
+			itemCreatedEvents.ForEach(item => this.eventStore.StoreAggregateEvent(item, nameof(this.BuildEventsFromData)));
+			photoAddedEvents.ForEach(item => this.eventStore.StoreAggregateEvent(item, nameof(this.BuildEventsFromData)));
 		}
 	}
 }

@@ -4,32 +4,38 @@ using System;
 
 namespace OxHack.Inventory.Cqrs.Commands.Photo
 {
-    public class UploadPhotoCommand : ICommand, IMapToEvent<PhotoUploaded>
-    {
-        public UploadPhotoCommand(byte[] photoData, string folder) 
-        {
-            this.PhotoData = photoData;
-            this.Folder = folder;
-        }
+	public class UploadPhotoCommand : ICommand, IMapToEvent<PhotoUploaded>
+	{
+		public UploadPhotoCommand(byte[] photoData, string folder, dynamic issuerMetadata)
+		{
+			this.PhotoData = photoData;
+			this.Folder = folder;
+			this.IssuerMetadata = issuerMetadata;
+		}
 
 		public Guid Id
 			=> Guid.Empty;
 
 		public byte[] PhotoData
-        {
-            get;
-        }
+		{
+			get;
+		}
 
-        public string Folder
-        {
-            get;
-        }
+		public string Folder
+		{
+			get;
+		}
 
-        public string ResultingFileName
-        {
-            get;
-            set;
-        }
+		public string ResultingFileName
+		{
+			get;
+			set;
+		}
+
+		public dynamic IssuerMetadata
+		{
+			get;
+		}
 
 		public PhotoUploaded GetEvent()
 		{

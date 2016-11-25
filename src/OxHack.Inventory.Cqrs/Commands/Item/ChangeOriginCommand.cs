@@ -5,12 +5,13 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 {
     public class ChangeOriginCommand : ICommand, IConcurrencyAware, IMapToEvent<OriginChanged>
     {
-        public ChangeOriginCommand(Guid aggregateRootId, int concurrencyId, string origin)
-        {
+        public ChangeOriginCommand(Guid aggregateRootId, int concurrencyId, string origin, dynamic issuerMetadata)
+		{
             this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.Origin = origin;
-        }
+			this.IssuerMetadata = issuerMetadata;
+		}
 
         public Guid Id
         {
@@ -25,9 +26,14 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
         public string Origin
         {
             get;
-        }
+		}
 
-        public OriginChanged GetEvent()
+		public dynamic IssuerMetadata
+		{
+			get;
+		}
+
+		public OriginChanged GetEvent()
         {
             return new OriginChanged(this.Id, this.ConcurrencyId + 1, this.Origin);
         }

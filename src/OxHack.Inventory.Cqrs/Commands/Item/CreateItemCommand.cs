@@ -21,7 +21,8 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 			string origin,
 			int quantity,
 			string spec,
-			List<string> photos)
+			List<string> photos, 
+			dynamic issuerMetadata)
 		{
 			this.Id = aggregateRootId;
 			this.AdditionalInformation = additionalInformation;
@@ -37,6 +38,7 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 			this.Quantity = quantity;
 			this.Spec = spec;
 			this.Photos = photos;
+			this.IssuerMetadata = issuerMetadata;
 		}
 
 		public Guid Id
@@ -105,6 +107,11 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 		}
 
 		public List<string> Photos
+		{
+			get;
+		}
+
+		public dynamic IssuerMetadata
 		{
 			get;
 		}

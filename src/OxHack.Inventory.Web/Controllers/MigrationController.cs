@@ -117,7 +117,7 @@ namespace OxHack.Inventory.Web.Controllers
 			{
 				foreach (var @event in allEvents)
 				{
-					this.eventStore.StoreAggregateEvent(@event);
+					this.eventStore.StoreAggregateEvent(@event, nameof(this.GenerateEventsFromQueryDb));
 				}
 			}
 

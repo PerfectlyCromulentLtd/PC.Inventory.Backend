@@ -32,78 +32,78 @@ namespace OxHack.Inventory.Command.Handlers
 
         public async Task Handle(CreateItemCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeAdditionalInformationCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeAppearanceCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeAssignedLocationCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeCategoryCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeCurrentLocationCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeIsLoanCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeManufacturerCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeModelCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeNameCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeOriginCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeQuantityCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(ChangeSpecCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
         public async Task Handle(UpdateItemCommand message)
         {
-            await this.StoreAggregateEvent(message);
+            await this.StoreAggregateEvent(message, message.IssuerMetadata);
         }
 
-        private async Task StoreAggregateEvent<TEvent>(IMapToEvent<TEvent> source) where TEvent : IAggregateEvent
+        private async Task StoreAggregateEvent<TEvent>(IMapToEvent<TEvent> source, dynamic issuerMetadata) where TEvent : IAggregateEvent
         {
             var @event = source.GetEvent();
-			this.eventStore.StoreAggregateEvent(@event);
+			this.eventStore.StoreAggregateEvent(@event, issuerMetadata);
 			await Task.WhenAll();
         }
     }

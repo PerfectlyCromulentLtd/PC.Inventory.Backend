@@ -5,12 +5,13 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
 {
     public class RemovePhotoCommand : ICommand, IConcurrencyAware, IMapToEvent<PhotoRemoved>
     {
-        public RemovePhotoCommand(Guid aggregateRootId, int concurrencyId, string photo) 
-        {
+        public RemovePhotoCommand(Guid aggregateRootId, int concurrencyId, string photo, dynamic issuerMetadata)
+		{
             this.Id = aggregateRootId;
             this.ConcurrencyId = concurrencyId;
             this.Photo = photo;
-        }
+			this.IssuerMetadata = issuerMetadata;
+		}
 
         public Guid Id
         {
@@ -25,9 +26,14 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
         public string Photo
         {
             get;
-        }
+		}
 
-        public PhotoRemoved GetEvent()
+		public dynamic IssuerMetadata
+		{
+			get;
+		}
+
+		public PhotoRemoved GetEvent()
         {
             return new PhotoRemoved(this.Id, this.ConcurrencyId + 1, this.Photo);
         }

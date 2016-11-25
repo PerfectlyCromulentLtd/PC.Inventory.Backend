@@ -25,9 +25,9 @@ namespace OxHack.Inventory.Web.Models.Commands.Item
             set;
         }
 
-        public DomainCommands.ICommand ToDomainCommand(EncryptionService encryptionService)
+        public DomainCommands.ICommand ToDomainCommand(EncryptionService encryptionService, dynamic issuerMetadata)
         {
-            return new DomainCommands.Item.ChangeIsLoanCommand(this.Id, this.GetDecryptedConcurrencyId(encryptionService), this.IsLoan);
+            return new DomainCommands.Item.ChangeIsLoanCommand(this.Id, this.GetDecryptedConcurrencyId(encryptionService), this.IsLoan, issuerMetadata);
         }
     }
 }

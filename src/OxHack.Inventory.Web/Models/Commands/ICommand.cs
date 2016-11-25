@@ -11,6 +11,6 @@ namespace OxHack.Inventory.Web.Models.Commands
             get;
 		}
 
-		DomainCommands.ICommand ToDomainCommand(EncryptionService encryptionService);
+		DomainCommands.ICommand ToDomainCommand(EncryptionService encryptionService, dynamic issuerMetadata);
 	}
 }

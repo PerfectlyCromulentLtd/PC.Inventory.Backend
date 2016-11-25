@@ -23,7 +23,8 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
            int quantity,
            string spec,
            List<string> photos,
-		   int concurrencyId)
+		   int concurrencyId,
+		   dynamic issuerMetadata)
         {
             this.Id = id;
             this.AdditionalInformation = additionalInformation;
@@ -40,7 +41,8 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
             this.Spec = spec;
             this.Photos = photos;
 			this.ConcurrencyId = concurrencyId;
-        }
+			this.IssuerMetadata = issuerMetadata;
+		}
 
         public Guid Id
         {
@@ -115,9 +117,14 @@ namespace OxHack.Inventory.Cqrs.Commands.Item
         public int ConcurrencyId
         {
             get;
-        }
+		}
 
-        public ItemUpdated GetEvent()
+		public dynamic IssuerMetadata
+		{
+			get;
+		}
+
+		public ItemUpdated GetEvent()
         {
             return new ItemUpdated(
                 this.Id,

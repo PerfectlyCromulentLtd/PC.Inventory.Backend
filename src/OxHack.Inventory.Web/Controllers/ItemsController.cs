@@ -20,20 +20,15 @@ using System.Threading.Tasks;
 namespace OxHack.Inventory.Web.Controllers
 {
 	[Route("api/v1/[controller]")]
-	public class ItemsController : Controller
+	public class ItemsController : ControllerBase
 	{
-		private readonly EncryptionService encryptionService;
 		private readonly ItemService itemService;
-		private readonly IConfiguration config;
 		private readonly ReadOnlyDictionary<string, Type> supportedDomainModelTypesByStringName;
-        private readonly IHostingEnvironment hostingEnvironment;
 
-        public ItemsController(ItemService itemService, EncryptionService encryptionService, IConfiguration config, IHostingEnvironment hostingEnvironment)
+		public ItemsController(ItemService itemService, EncryptionService encryptionService, IHostingEnvironment hostingEnvironment, IConfiguration config)
+			: base(encryptionService, hostingEnvironment, config)
 		{
 			this.itemService = itemService;
-			this.encryptionService = encryptionService;
-			this.config = config;
-            this.hostingEnvironment = hostingEnvironment;
 
 			var supportedDomainModelTypesByStringName = new Dictionary<string, Type>();
 			supportedDomainModelTypesByStringName.Add(nameof(CreateItemCommand), typeof(CreateItemCommand));
@@ -49,11 +44,11 @@ namespace OxHack.Inventory.Web.Controllers
 			supportedDomainModelTypesByStringName.Add(nameof(ChangeOriginCommand), typeof(ChangeOriginCommand));
 			supportedDomainModelTypesByStringName.Add(nameof(ChangeQuantityCommand), typeof(ChangeQuantityCommand));
 			supportedDomainModelTypesByStringName.Add(nameof(ChangeSpecCommand), typeof(ChangeSpecCommand));
-            
-            // TODO: Remove this command altogether
-            supportedDomainModelTypesByStringName.Add(nameof(UpdateItemCommand), typeof(UpdateItemCommand));
 
-            this.supportedDomainModelTypesByStringName = new ReadOnlyDictionary<string, Type>(supportedDomainModelTypesByStringName);
+			// TODO: Remove this command altogether
+			supportedDomainModelTypesByStringName.Add(nameof(UpdateItemCommand), typeof(UpdateItemCommand));
+
+			this.supportedDomainModelTypesByStringName = new ReadOnlyDictionary<string, Type>(supportedDomainModelTypesByStringName);
 		}
 
 		[HttpGet]
@@ -71,7 +66,7 @@ namespace OxHack.Inventory.Web.Controllers
 				models = await this.itemService.GetAllItemsAsync();
 			}
 
-			return models.Select(item => item.ToWebModel(this.Host + this.PathToPhotos, this.encryptionService)).ToList();
+			return models.Select(item => item.ToWebModel(this.Host + this.PathToPhotos, this.EncryptionService)).ToList();
 		}
 
 		[HttpGet("{id}")]
@@ -83,7 +78,7 @@ namespace OxHack.Inventory.Web.Controllers
 			{
 				return
 					new ObjectResult(
-						model.ToWebModel(this.Host + this.PathToPhotos, this.encryptionService));
+						model.ToWebModel(this.Host + this.PathToPhotos, this.EncryptionService));
 			}
 			else
 			{
@@ -93,14 +88,13 @@ namespace OxHack.Inventory.Web.Controllers
 
 		[HttpPost]
 		public async Task<IActionResult> CreateItem(
-            [FromBody] CreateItemCommand command,
-			[FromHeader(Name = Constants.InventoryClientNameHttpHeader)] string clientName,
-			[FromHeader(Name = Constants.InventoryClientVersionHttpHeader)] string clientVersion,
-			[FromHeader(Name = Constants.InventoryClientIdHttpHeader)] string clientId)
+			[FromBody] CreateItemCommand command)
 		{
-			if (String.IsNullOrWhiteSpace(clientName) || String.IsNullOrWhiteSpace(clientVersion) || String.IsNullOrWhiteSpace(clientId))
+			IActionResult error;
+			var clientMetadata = this.ExtractClientMetadata(out error);
+			if (error != null)
 			{
-				return this.BadRequest(Constants.MissingHttpHeaderMessage);
+				return error;
 			}
 
 			IActionResult result;
@@ -116,7 +110,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 			try
 			{
-				await this.itemService.IssueCommandAsync(command.ToDomainCommand(this.encryptionService));
+				await this.itemService.IssueCommandAsync(command.ToDomainCommand(this.EncryptionService, clientMetadata));
 			}
 			catch (OptimisticConcurrencyException)
 			{
@@ -128,15 +122,14 @@ namespace OxHack.Inventory.Web.Controllers
 
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Put(
-            Guid id, 
-            [FromBody] JObject body,
-			[FromHeader(Name = Constants.InventoryClientNameHttpHeader)] string clientName,
-			[FromHeader(Name = Constants.InventoryClientVersionHttpHeader)] string clientVersion,
-			[FromHeader(Name = Constants.InventoryClientIdHttpHeader)] string clientId)
+			Guid id,
+			[FromBody] JObject body)
 		{
-			if (String.IsNullOrWhiteSpace(clientName) || String.IsNullOrWhiteSpace(clientVersion) || String.IsNullOrWhiteSpace(clientId))
+			IActionResult error;
+			var clientMetadata = this.ExtractClientMetadata(out error);
+			if (error != null)
 			{
-				return this.BadRequest(Constants.MissingHttpHeaderMessage);
+				return error;
 			}
 
 			IActionResult result;
@@ -148,7 +141,7 @@ namespace OxHack.Inventory.Web.Controllers
 
 			try
 			{
-				await this.itemService.IssueCommandAsync(command.ToDomainCommand(this.encryptionService));
+				await this.itemService.IssueCommandAsync(command.ToDomainCommand(this.EncryptionService, clientMetadata));
 			}
 			catch (CryptographicException)
 			{
@@ -272,11 +265,5 @@ namespace OxHack.Inventory.Web.Controllers
 
 			return stillValid;
 		}
-
-		private string Host
-			=> this.HttpContext.Request.Scheme + "://" + this.HttpContext.Request.Host;
-
-		private string PathToPhotos
-			=> this.config[this.hostingEnvironment.EnvironmentName + ":ItemPhotos"];
 	}
 }

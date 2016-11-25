@@ -93,7 +93,7 @@ namespace OxHack.Inventory.Web.Models.Commands.Item
 			set;
 		}
 
-        public DomainCommands.ICommand ToDomainCommand(EncryptionService encryptionService)
+        public DomainCommands.ICommand ToDomainCommand(EncryptionService encryptionService, dynamic issuerMetadata)
         {
             return
                 new DomainCommands.Item.CreateItemCommand(
@@ -110,7 +110,8 @@ namespace OxHack.Inventory.Web.Models.Commands.Item
                     this.Origin,
                     this.Quantity,
                     this.Spec,
-					this.Photos.FromUriStrings().ToList());
+					this.Photos.FromUriStrings().ToList(),
+					issuerMetadata);
         }
     }
 }

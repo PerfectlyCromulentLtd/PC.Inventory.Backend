@@ -6,8 +6,8 @@ namespace OxHack.Inventory.Cqrs
 {
     public interface IEventStore
     {
-        void StoreAggregateEvent(IAggregateEvent message);
-		void StoreEvent(string streamName, IEvent message);
+        void StoreAggregateEvent(IAggregateEvent @event, dynamic eventMetadata);
+		void StoreEvent(string streamName, IEvent @event, dynamic eventMetadata);
 		IReadOnlyList<StoredEvent> GetAllEvents();
 		IReadOnlyList<StoredEvent> GetEventsByAggregateId(Guid aggregateId);
 	}

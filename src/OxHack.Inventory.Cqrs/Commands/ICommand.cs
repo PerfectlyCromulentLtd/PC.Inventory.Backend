@@ -5,7 +5,11 @@ using System.Threading.Tasks;
 
 namespace OxHack.Inventory.Cqrs.Commands
 {
-    public interface ICommand : IMessage
-    {
-    }
+	public interface ICommand : IMessage
+	{
+		dynamic IssuerMetadata
+		{
+			get;
+		}
+	}
 }
